@@ -1,0 +1,47 @@
+<!-- Partie 9 : Fond blanc, ombre, coins arrondis, padding et espacement -->
+<div class="project-card bg-white shadow-md rounded-2xl p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg">
+  <div>
+    <!-- En-tête : Nom du projet et Statut -->
+    <div class="flex items-start justify-between gap-3 mb-3">
+      <!-- Partie 6.1 : Interpolation du nom du projet -->
+      <h3 class="text-lg font-bold text-slate-900 tracking-tight">
+        {{ project().name }}
+      </h3>
+
+      <!-- Partie 6.1 & 9 : Interpolation du statut avec différenciation visuelle -->
+      <span
+        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0"
+        [ngClass]="getStatusBadgeClass(project().status)"
+      >
+        {{ project().status }}
+      </span>
+    </div>
+
+    <!-- Partie 6.1 : Interpolation de la description du projet -->
+    <p class="text-sm text-slate-600 mb-5 leading-relaxed">
+      {{ project().description }}
+    </p>
+
+    <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
+    <div class="pt-4 border-t border-slate-100">
+      <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
+        Tâches du projet ({{ project().tasks.length }})
+      </h4>
+      <app-task-list [tasks]="project().tasks" />
+    </div>
+  </div>
+
+  <!-- Partie 6.4 : Event Binding avec le bouton « Sélectionner » -->
+  <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end">
+    <button
+      type="button"
+      (click)="selectProject()"
+      class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm cursor-pointer"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+      </svg>
+      Sélectionner
+    </button>
+  </div>
+</div>

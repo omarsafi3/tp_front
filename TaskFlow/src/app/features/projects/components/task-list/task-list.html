@@ -1,0 +1,53 @@
+<div class="task-list space-y-2.5">
+  <!-- Partie 8.2 : @if pour afficher "Aucune tâche" -->
+  @if (tasks().length === 0) {
+    <p class="text-sm text-slate-400 italic py-3 text-center bg-slate-50 rounded-lg border border-dashed border-slate-200">
+      Aucune tâche.
+    </p>
+  } @else {
+    <ul class="space-y-2">
+      @for (task of tasks(); track task.id) {
+        <!-- Partie 9 : Tâche avec bordure latérale, espacement et fond différencié -->
+        <li
+          class="flex items-center justify-between gap-3 p-3 rounded-lg border border-slate-200 shadow-xs transition-all duration-150"
+          [ngClass]="getTaskStatusBorderClass(task.status)"
+        >
+          <!-- Partie 6.1 : Interpolation du titre de la tâche -->
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span
+              class="w-2 h-2 rounded-full shrink-0"
+              [class.bg-emerald-500]="task.status === 'Terminé'"
+              [class.bg-blue-500]="task.status === 'En cours'"
+              [class.bg-amber-500]="task.status === 'En attente'"
+            ></span>
+            <span
+              class="text-sm font-medium truncate"
+              [class.line-through]="task.status === 'Terminé'"
+              [class.text-slate-400]="task.status === 'Terminé'"
+            >
+              {{ task.title }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <!-- Partie 6.1 : Interpolation de la priorité avec badge -->
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border"
+              [ngClass]="getPriorityBadgeClass(task.priority)"
+            >
+              Priorité : {{ task.priority }}
+            </span>
+
+            <!-- Partie 6.1 : Interpolation du statut avec badge différencié -->
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border"
+              [ngClass]="getStatusBadgeClass(task.status)"
+            >
+              {{ task.status }}
+            </span>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>
