@@ -1,0 +1,109 @@
+<div class="space-y-8">
+  <!-- Header & Stats -->
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+    <div>
+      <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Équipe & Utilisateurs</h2>
+      <p class="text-slate-500 font-medium">
+        Consultez les membres de l'équipe, leur charge de travail et leurs assignations.
+      </p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="flex gap-3">
+      <div class="px-4 py-2.5 rounded-2xl bg-white/70 backdrop-blur-md border border-white shadow-sm">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total</span>
+        <span class="text-xl font-black text-slate-800">{{ totalUsersCount() }}</span>
+      </div>
+      <div class="px-4 py-2.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 shadow-sm">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 block">Actifs</span>
+        <span class="text-xl font-black text-emerald-700">{{ activeUsersCount() }}</span>
+      </div>
+      <div class="px-4 py-2.5 rounded-2xl bg-slate-100/70 border border-slate-200/60 shadow-sm">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Inactifs</span>
+        <span class="text-xl font-black text-slate-600">{{ inactiveUsersCount() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="bg-white/70 backdrop-blur-xl border border-white/60 p-2 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col sm:flex-row gap-3 items-center">
+    <!-- Search Bar -->
+    <div class="relative w-full sm:w-96 flex-shrink-0">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input
+        type="text"
+        placeholder="Rechercher par nom, email ou rôle..."
+        [(ngModel)]="searchTerm"
+        class="w-full pl-11 pr-4 py-3 bg-slate-100/50 border-none rounded-2xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm font-medium"
+      />
+    </div>
+
+    <!-- Active Filters -->
+    <div class="flex p-1 w-full sm:w-auto bg-slate-100/80 rounded-2xl">
+      @for (filter of ['Tous', 'Actifs', 'Inactifs']; track filter) {
+        <button
+          type="button"
+          (click)="setActiveFilter($any(filter))"
+          class="flex-1 sm:flex-none px-5 py-2 rounded-xl text-xs font-bold transition-all duration-200"
+          [class.bg-white]="activeFilter() === filter"
+          [class.text-indigo-600]="activeFilter() === filter"
+          [class.shadow-sm]="activeFilter() === filter"
+          [class.text-slate-500]="activeFilter() !== filter"
+          [class.hover:text-slate-800]="activeFilter() !== filter"
+        >
+          {{ filter }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Selected User Preview Banner -->
+  @if (selectedUser(); as user) {
+    <div class="animate-in fade-in slide-in-from-top-3 duration-300 relative overflow-hidden bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl font-black">
+          {{ user.name.charAt(0) }}
+        </div>
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/10 text-[10px] font-bold uppercase tracking-wider text-indigo-200 mb-1">
+            Focus Membre
+          </span>
+          <h4 class="text-xl font-bold">{{ user.name }} <span class="text-xs font-normal text-slate-300">({{ user.role }})</span></h4>
+          <p class="text-xs text-slate-300">{{ user.email }}</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="selectedUser.set(null)"
+        class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs font-bold transition-all"
+      >
+        Fermer
+      </button>
+    </div>
+  }
+
+  <!-- Users Grid / Empty State -->
+  @if (filteredUsers().length === 0) {
+    <div class="animate-in fade-in duration-300">
+      <app-empty-state
+        [title]="searchTerm() ? 'Aucun utilisateur trouvé pour « ' + searchTerm() + ' »' : 'Aucun utilisateur disponible'"
+        [message]="'Essayez de modifier votre terme de recherche ou le filtre actif.'"
+      />
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      @for (user of filteredUsers(); track user.id) {
+        <app-user-card
+          [user]="user"
+          [projects]="projects()"
+          [isSelected]="selectedUser()?.id === user.id"
+          (userSelected)="onUserSelected($event)"
+        />
+      }
+    </div>
+  }
+</div>

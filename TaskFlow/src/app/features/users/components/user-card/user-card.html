@@ -1,0 +1,122 @@
+<div
+  class="relative h-full flex flex-col bg-white/70 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6 transition-all duration-300 group hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1"
+  [class.ring-2]="isSelected()"
+  [class.ring-indigo-500]="isSelected()"
+  [class.shadow-[0_20px_40px_rgba(99,102,241,0.15)]]="isSelected()"
+  [class.border-transparent]="isSelected()"
+>
+  <!-- Background Glow on Hover -->
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl -z-10"></div>
+
+  <!-- Header: Avatar + Info + Active status -->
+  <div class="flex items-start justify-between gap-4 mb-4">
+    <div class="flex items-center gap-3.5 min-w-0">
+      <!-- Avatar -->
+      <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-md shrink-0">
+        {{ user().name.charAt(0) }}
+        <!-- Status indicator dot -->
+        <span
+          class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white"
+          [class.bg-emerald-500]="user().active"
+          [class.bg-slate-400]="!user().active"
+          [title]="user().active ? 'Actif' : 'Inactif'"
+        ></span>
+      </div>
+
+      <div class="min-w-0">
+        <h3 class="text-lg font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">
+          {{ user().name }}
+        </h3>
+        <p class="text-xs text-slate-400 truncate font-medium">
+          {{ user().email }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Active/Inactive Badge -->
+    <span
+      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold shrink-0"
+      [class.bg-emerald-100/80]="user().active"
+      [class.text-emerald-700]="user().active"
+      [class.border]="true"
+      [class.border-emerald-200/50]="user().active"
+      [class.bg-slate-100]="!user().active"
+      [class.text-slate-500]="!user().active"
+      [class.border-slate-200]="!user().active"
+    >
+      <span
+        class="w-1.5 h-1.5 rounded-full"
+        [class.bg-emerald-500]="user().active"
+        [class.bg-slate-400]="!user().active"
+      ></span>
+      {{ user().active ? 'Actif' : 'Inactif' }}
+    </span>
+  </div>
+
+  <!-- Role Badge -->
+  <div class="mb-4">
+    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+      {{ user().role }}
+    </span>
+  </div>
+
+  <!-- Divider -->
+  <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-2"></div>
+
+  <!-- Tasks Breakdown -->
+  <div class="flex-1 py-2">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Tâches assignées</span>
+      <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+        {{ userTasks().length }}
+      </span>
+    </div>
+
+    @if (userTasks().length === 0) {
+      <div class="py-4 text-center rounded-2xl bg-slate-50/50 border border-dashed border-slate-200">
+        <p class="text-xs font-medium text-slate-400">Aucune tâche assignée</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-3 gap-2">
+        <div class="p-2.5 rounded-xl bg-slate-50/80 border border-slate-100 text-center">
+          <p class="text-[10px] uppercase font-bold text-slate-400">À faire</p>
+          <p class="text-base font-black text-amber-500">{{ pendingTasksCount() }}</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-blue-50/50 border border-blue-100/50 text-center">
+          <p class="text-[10px] uppercase font-bold text-blue-500">En cours</p>
+          <p class="text-base font-black text-blue-600">{{ inProgressTasksCount() }}</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100/50 text-center">
+          <p class="text-[10px] uppercase font-bold text-emerald-500">Fait</p>
+          <p class="text-base font-black text-emerald-600">{{ completedTasksCount() }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Select User Action Button -->
+  <div class="mt-4 pt-3">
+    <button
+      type="button"
+      (click)="selectUser()"
+      class="w-full relative overflow-hidden flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm transition-all duration-300"
+      [class.bg-indigo-600]="!isSelected()"
+      [class.text-white]="!isSelected()"
+      [class.hover:bg-indigo-700]="!isSelected()"
+      [class.bg-indigo-50]="isSelected()"
+      [class.text-indigo-700]="isSelected()"
+    >
+      @if (isSelected()) {
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        Utilisateur sélectionné
+      } @else {
+        <span>Voir les détails</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      }
+    </button>
+  </div>
+</div>
