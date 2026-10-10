@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { UserService } from '../../../../core/services/user.service';
+import { User } from '../../../users/models/user.model';
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 
 @Component({
@@ -9,9 +11,29 @@ import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
 })
-export class TaskList {
+export class TaskList implements OnInit {
+  private readonly userService = inject(UserService);
+
   // Partie 6.3 : Input requis entre composants
   readonly tasks = input.required<Task[]>();
+
+  // Input optionnel pour afficher ou masquer l'assigné (Partie 16.3)
+  readonly showAssignee = input<boolean>(true);
+
+  // Liste des utilisateurs pour afficher le nom de l'assigné
+  readonly users = signal<User[]>([]);
+
+  ngOnInit(): void {
+    this.userService.getUsers().subscribe((users) => {
+      this.users.set(users);
+    });
+  }
+
+  getAssigneeName(assigneeId?: number): string {
+    if (!assigneeId) return 'Non assigné';
+    const user = this.users().find((u) => u.id === assigneeId);
+    return user ? user.name : 'Non assigné';
+  }
 
   /**
    * Retourne la classe de bordure latérale et de fond selon le statut (Partie 9)
