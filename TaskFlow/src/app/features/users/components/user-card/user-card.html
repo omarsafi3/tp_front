@@ -1,133 +1,123 @@
 <div
-  class="relative h-full flex flex-col bg-white/70 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6 transition-all duration-300 group hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1"
+  class="bg-white shadow-md rounded-2xl p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg"
   [class.ring-2]="isSelected()"
   [class.ring-indigo-500]="isSelected()"
-  [class.shadow-[0_20px_40px_rgba(99,102,241,0.15)]]="isSelected()"
-  [class.border-transparent]="isSelected()"
+  [class.border-indigo-300]="isSelected()"
 >
-  <!-- Background Glow on Hover -->
-  <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl -z-10"></div>
+  <div>
+    <!-- En-tête : Avatar + Informations utilisateur + Badge Actif/Inactif -->
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <!-- Avatar Initiales -->
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center text-lg font-black shadow-sm shrink-0">
+          {{ user().name.charAt(0) }}
+        </div>
 
-  <!-- Header: Informations utilisateur + Badge Actif / Inactif -->
-  <div class="flex items-start justify-between gap-4 mb-4">
-    <div class="flex items-center gap-3.5 min-w-0">
-      <!-- Avatar Initiales -->
-      <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-md shrink-0">
-        {{ user().name.charAt(0) }}
-        <!-- Indicateur lumineux -->
+        <div class="min-w-0">
+          <h3 class="text-base font-bold text-slate-900 truncate">
+            {{ user().name }}
+          </h3>
+          <p class="text-xs text-slate-500 truncate">
+            {{ user().email }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Badge Actif / Inactif -->
+      <span
+        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0"
+        [class.bg-emerald-50]="user().active"
+        [class.text-emerald-700]="user().active"
+        [class.border-emerald-200]="user().active"
+        [class.bg-slate-100]="!user().active"
+        [class.text-slate-500]="!user().active"
+        [class.border-slate-200]="!user().active"
+      >
         <span
-          class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white"
+          class="w-1.5 h-1.5 rounded-full"
           [class.bg-emerald-500]="user().active"
           [class.bg-slate-400]="!user().active"
         ></span>
-      </div>
-
-      <div class="min-w-0">
-        <h3 class="text-lg font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">
-          {{ user().name }}
-        </h3>
-        <p class="text-xs text-slate-400 truncate font-medium">
-          {{ user().email }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Badge Actif / Inactif (Style différent selon user.active) -->
-    <span
-      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold shrink-0 border"
-      [class.bg-emerald-50]="user().active"
-      [class.text-emerald-700]="user().active"
-      [class.border-emerald-200/60]="user().active"
-      [class.bg-slate-100]="!user().active"
-      [class.text-slate-500]="!user().active"
-      [class.border-slate-200]="!user().active"
-    >
-      <span
-        class="w-1.5 h-1.5 rounded-full"
-        [class.bg-emerald-500]="user().active"
-        [class.bg-slate-400]="!user().active"
-      ></span>
-      {{ user().active ? 'Actif' : 'Inactif' }}
-    </span>
-  </div>
-
-  <!-- Rôle utilisateur -->
-  <div class="mb-4">
-    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-      {{ user().role }}
-    </span>
-  </div>
-
-  <!-- Trois Compteurs de Tâches : À faire (En attente), En cours, Terminées -->
-  <div class="mb-4">
-    <div class="flex items-center justify-between mb-2">
-      <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Tâches assignées</span>
-      <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
-        {{ allUserTasks().length }}
+        {{ user().active ? 'Actif' : 'Inactif' }}
       </span>
     </div>
 
-    <div class="grid grid-cols-3 gap-2">
-      <!-- À faire (En attente) -->
-      <div class="p-2.5 rounded-xl bg-amber-50/60 border border-amber-100/60 text-center">
-        <p class="text-[10px] uppercase font-bold text-amber-600">À faire</p>
-        <p class="text-base font-black text-amber-700">{{ pendingCount() }}</p>
+    <!-- Badge Rôle -->
+    <div class="mb-4">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+        {{ user().role }}
+      </span>
+    </div>
+
+    <!-- Section Trois Compteurs -->
+    <div class="mb-5 pt-3 border-t border-slate-100">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          Tâches assignées ({{ allUserTasks().length }})
+        </h4>
       </div>
 
-      <!-- En cours -->
-      <div class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100/60 text-center">
-        <p class="text-[10px] uppercase font-bold text-blue-600">En cours</p>
-        <p class="text-base font-black text-blue-700">{{ inProgressCount() }}</p>
-      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <!-- À faire (En attente) -->
+        <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/70 text-center">
+          <p class="text-[10px] uppercase font-bold text-amber-700">À faire</p>
+          <p class="text-base font-black text-amber-700 mt-0.5">{{ pendingCount() }}</p>
+        </div>
 
-      <!-- Terminées -->
-      <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100/60 text-center">
-        <p class="text-[10px] uppercase font-bold text-emerald-600">Terminées</p>
-        <p class="text-base font-black text-emerald-700">{{ completedCount() }}</p>
+        <!-- En cours -->
+        <div class="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/70 text-center">
+          <p class="text-[10px] uppercase font-bold text-blue-700">En cours</p>
+          <p class="text-base font-black text-blue-700 mt-0.5">{{ inProgressCount() }}</p>
+        </div>
+
+        <!-- Terminées -->
+        <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/70 text-center">
+          <p class="text-[10px] uppercase font-bold text-emerald-700">Terminées</p>
+          <p class="text-base font-black text-emerald-700 mt-0.5">{{ completedCount() }}</p>
+        </div>
       </div>
+    </div>
+
+    <!-- Section Tâches par projet via UserProjectGroup / @empty -->
+    <div class="pt-3 border-t border-slate-100 space-y-3">
+      @for (group of projectGroups(); track group.projectId) {
+        <app-user-project-group
+          [projectName]="group.projectName"
+          [tasks]="group.tasks"
+        />
+      } @empty {
+        <div class="py-2">
+          <app-empty-state
+            title="Aucune tâche assignée"
+            message="Cet utilisateur n'a aucune tâche en cours sur les projets."
+          />
+        </div>
+      }
     </div>
   </div>
 
-  <!-- Divider -->
-  <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-1"></div>
-
-  <!-- Tâches regroupées par projet via UserProjectGroup OU message si aucune tâche (@empty) -->
-  <div class="flex-1 space-y-3 py-2">
-    @for (group of projectGroups(); track group.projectId) {
-      <app-user-project-group
-        [projectName]="group.projectName"
-        [tasks]="group.tasks"
-      />
-    } @empty {
-      <div class="py-2">
-        <app-empty-state
-          title="Aucune tâche assignée"
-          message="Cet utilisateur n'a aucune tâche en cours sur les projets."
-        />
-      </div>
-    }
-  </div>
-
   <!-- Bouton de sélection -->
-  <div class="mt-4 pt-2">
+  <div class="mt-6 pt-4 border-t border-slate-100">
     <button
       type="button"
       (click)="selectUser()"
-      class="w-full relative overflow-hidden flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm transition-all duration-300"
+      class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
       [class.bg-indigo-600]="!isSelected()"
       [class.text-white]="!isSelected()"
       [class.hover:bg-indigo-700]="!isSelected()"
       [class.bg-indigo-50]="isSelected()"
       [class.text-indigo-700]="isSelected()"
+      [class.border]="isSelected()"
+      [class.border-indigo-200]="isSelected()"
     >
       @if (isSelected()) {
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
         </svg>
         Membre sélectionné
       } @else {
         <span>Sélectionner</span>
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
         </svg>
       }

@@ -14,6 +14,9 @@ export class ProjectCard {
   // Partie 6.2 : Utiliser l’API moderne input.required
   readonly project = input.required<Project>();
 
+  // Input optionnel pour l'état sélectionné
+  readonly isSelected = input<boolean>(false);
+
   // Partie 6.5 : Output pour informer le parent lors de la sélection
   readonly projectSelected = output<Project>();
 

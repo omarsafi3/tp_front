@@ -1,10 +1,15 @@
 <!-- Partie 9 : Fond blanc, ombre, coins arrondis, padding et espacement -->
-<div class="project-card bg-white shadow-md rounded-2xl p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg">
+<div
+  class="project-card bg-white shadow-md rounded-2xl p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg"
+  [class.ring-2]="isSelected()"
+  [class.ring-indigo-500]="isSelected()"
+  [class.border-indigo-300]="isSelected()"
+>
   <div>
     <!-- En-tête : Nom du projet et Statut -->
     <div class="flex items-start justify-between gap-3 mb-3">
       <!-- Partie 6.1 : Interpolation du nom du projet -->
-      <h3 class="text-lg font-bold text-slate-900 tracking-tight">
+      <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
         {{ project().name }}
       </h3>
 
@@ -32,16 +37,30 @@
   </div>
 
   <!-- Partie 6.4 : Event Binding avec le bouton « Sélectionner » -->
-  <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end">
+  <div class="mt-6 pt-4 border-t border-slate-100">
     <button
       type="button"
       (click)="selectProject()"
-      class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm cursor-pointer"
+      class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+      [class.bg-indigo-600]="!isSelected()"
+      [class.text-white]="!isSelected()"
+      [class.hover:bg-indigo-700]="!isSelected()"
+      [class.bg-indigo-50]="isSelected()"
+      [class.text-indigo-700]="isSelected()"
+      [class.border]="isSelected()"
+      [class.border-indigo-200]="isSelected()"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-      </svg>
-      Sélectionner
+      @if (isSelected()) {
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Projet sélectionné
+      } @else {
+        <span>Sélectionner</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      }
     </button>
   </div>
 </div>
