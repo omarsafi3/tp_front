@@ -7,4 +7,5 @@ export interface Task {
   title: string;
   priority: TaskPriority;
   status: TaskStatus;
+  assigneeId?: number;
 }
