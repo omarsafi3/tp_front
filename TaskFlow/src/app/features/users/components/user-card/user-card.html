@@ -99,8 +99,11 @@
         [tasks]="group.tasks"
       />
     } @empty {
-      <div class="py-6 text-center rounded-2xl bg-slate-50/50 border border-dashed border-slate-200">
-        <p class="text-xs font-semibold text-slate-400">Aucune tâche assignée</p>
+      <div class="py-2">
+        <app-empty-state
+          title="Aucune tâche assignée"
+          message="Cet utilisateur n'a aucune tâche en cours sur les projets."
+        />
       </div>
     }
   </div>

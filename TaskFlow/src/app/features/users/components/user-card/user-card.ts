@@ -3,6 +3,7 @@ import { Component, computed, input, output } from '@angular/core';
 import { Project } from '../../../projects/models/project.model';
 import { Task } from '../../../projects/models/task.model';
 import { User } from '../../models/user.model';
+import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 import { UserProjectGroup } from '../user-project-group/user-project-group';
 
 export interface UserProjectGroupData {
@@ -14,7 +15,7 @@ export interface UserProjectGroupData {
 @Component({
   selector: 'app-user-card',
   standalone: true,
-  imports: [CommonModule, UserProjectGroup],
+  imports: [CommonModule, UserProjectGroup, EmptyState],
   templateUrl: './user-card.html',
   styleUrl: './user-card.css',
 })
