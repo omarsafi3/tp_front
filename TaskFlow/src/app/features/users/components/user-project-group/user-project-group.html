@@ -1,0 +1,47 @@
+<div class="rounded-2xl bg-slate-50/70 border border-slate-200/60 p-3.5 space-y-2.5">
+  <!-- Project Title Header -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="w-2 h-2 rounded-full bg-indigo-500 shrink-0"></span>
+      <h5 class="text-xs font-bold text-slate-800 truncate">
+        {{ projectName() }}
+      </h5>
+    </div>
+    <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white text-slate-500 border border-slate-200/50 shrink-0">
+      {{ tasks().length }}
+    </span>
+  </div>
+
+  <!-- Tasks in this project -->
+  <ul class="space-y-1.5">
+    @for (task of tasks(); track task.id) {
+      <li class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white border border-slate-100 shadow-[0_1px_3px_rgb(0,0,0,0.02)]">
+        <span
+          class="text-xs font-medium text-slate-700 truncate"
+          [class.line-through]="task.status === 'Terminé'"
+          [class.text-slate-400]="task.status === 'Terminé'"
+        >
+          {{ task.title }}
+        </span>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <!-- Priority -->
+          <span
+            class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded border"
+            [ngClass]="getPriorityBadgeClass(task.priority)"
+          >
+            {{ task.priority }}
+          </span>
+
+          <!-- Status -->
+          <span
+            class="text-[9px] font-bold px-1.5 py-0.5 rounded border"
+            [ngClass]="getStatusBadgeClass(task.status)"
+          >
+            {{ task.status }}
+          </span>
+        </div>
+      </li>
+    }
+  </ul>
+</div>
