@@ -1,22 +1,27 @@
-<div class="min-h-screen bg-slate-50 flex flex-col font-sans">
-  <!-- Barre de navigation supérieure -->
-  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<div class="min-h-screen bg-slate-50/50 relative overflow-hidden flex flex-col font-sans text-slate-800 selection:bg-indigo-100 selection:text-indigo-800">
+  <!-- Décorations d'arrière-plan modernes (Ambient glow blobs) -->
+  <div class="fixed top-[-12%] left-[-8%] w-[45%] h-[45%] rounded-full bg-purple-300/20 blur-[130px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-300/20 blur-[140px] pointer-events-none -z-10"></div>
+  <div class="fixed top-[40%] right-[20%] w-[35%] h-[35%] rounded-full bg-blue-200/15 blur-[120px] pointer-events-none -z-10"></div>
+
+  <!-- Barre de navigation supérieure (Frosted glass) -->
+  <header class="sticky top-0 z-40 bg-white/75 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_25px_rgba(0,0,0,0.03)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <!-- Logo et Titre -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-sm shadow-indigo-200">
+      <div class="flex items-center gap-3.5 group cursor-pointer">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/25 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
         </div>
         <div>
-          <h1 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight flex items-center gap-2">
             {{ title() }}
-            <span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-200">
-              Workspace
+            <span class="text-[10px] font-black uppercase tracking-wider bg-indigo-50/80 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-200/50 shadow-2xs">
+              Studio
             </span>
           </h1>
-          <p class="text-xs text-slate-400">Gestion et suivi de projets interactifs</p>
+          <p class="text-xs font-medium text-slate-400">Workspace de gestion collaborative</p>
         </div>
       </div>
 
@@ -28,29 +33,39 @@
           (viewChange)="onViewChange($event)"
         />
 
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          Connecté
-        </span>
+        <div class="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-slate-200/60 shadow-2xs">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="text-xs font-bold text-slate-600">En ligne</span>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- Contenu Principal -->
-  <main class="flex-1">
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     @if (currentView() === 'tasks') {
-      <app-project-list />
+      <div class="animate-in fade-in duration-300">
+        <app-project-list />
+      </div>
     } @else {
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="animate-in fade-in duration-300">
         <app-user-list />
       </div>
     }
   </main>
 
   <!-- Pied de page -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-400">
-    <div class="max-w-7xl mx-auto px-4">
-      <p>&copy; 2026 TaskFlow &bull; TP Architecture Frontend Angular</p>
+  <footer class="bg-white/60 backdrop-blur-md border-t border-slate-200/50 py-8 mt-12 text-center text-xs font-medium text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-700">TaskFlow</span>
+        <span>&bull;</span>
+        <span>Framework Web Front-End</span>
+      </div>
+      <p>&copy; 2026-2027 Tous droits réservés.</p>
     </div>
   </footer>
 </div>
