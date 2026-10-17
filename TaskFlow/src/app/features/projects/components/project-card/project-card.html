@@ -68,15 +68,32 @@
 
     <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
     <div class="pt-4 border-t border-slate-100">
-      <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center justify-between mb-2">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Tâches du projet ({{ project().tasks.length }})
+          Tâches ({{ (project().tasks | slice:0:3).length }} sur {{ project().tasks.length }})
         </h4>
         <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 shadow-2xs">
           {{ completionRate() | percent:'1.0-0' }}
         </span>
       </div>
-      <app-task-list [tasks]="project().tasks" />
+
+      <!-- Étape 7 : Afficher le nombre de tâches par priorité avec keyvalue -->
+      @if (project().tasks.length > 0) {
+        <div class="mb-3 flex flex-wrap items-center gap-1.5">
+          <span class="text-[11px] font-semibold text-slate-400 mr-1">Priorités :</span>
+          @for (item of tasksByPriority() | keyvalue; track item.key) {
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border shadow-2xs"
+              [ngClass]="getPriorityBadgeClass(item.key)"
+            >
+              {{ item.key }} : {{ item.value }}
+            </span>
+          }
+        </div>
+      }
+
+      <!-- Étape 6 : N’afficher que les 3 premières tâches du projet (slice) -->
+      <app-task-list [tasks]="project().tasks | slice:0:3" />
     </div>
   </div>
 

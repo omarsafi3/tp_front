@@ -40,6 +40,33 @@ export class ProjectCard {
     return budget / taskCount;
   });
 
+  // Nombre de tâches par priorité pour le pipe keyvalue (Basse, Haute, Moyenne)
+  readonly tasksByPriority = computed<Record<string, number>>(() => {
+    const counts: Record<string, number> = {
+      Basse: 0,
+      Haute: 0,
+      Moyenne: 0,
+    };
+    for (const task of this.project().tasks) {
+      if (task.priority in counts) {
+        counts[task.priority]++;
+      }
+    }
+    return counts;
+  });
+
+  getPriorityBadgeClass(priority: string): string {
+    switch (priority) {
+      case 'Haute':
+        return 'bg-rose-100 text-rose-700 border-rose-200';
+      case 'Moyenne':
+        return 'bg-orange-100 text-orange-700 border-orange-200';
+      case 'Basse':
+      default:
+        return 'bg-slate-100 text-slate-600 border-slate-200';
+    }
+  }
+
   // Partie 6.4 & 6.5 : Méthode appelée au clic sur le bouton Sélectionner
   selectProject(): void {
     this.projectSelected.emit(this.project());
