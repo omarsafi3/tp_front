@@ -8,4 +8,6 @@ export interface Project {
   description: string;
   status: ProjectStatus;
   tasks: Task[];
+  startDate?: string;
+  budget?: number;
 }
