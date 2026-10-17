@@ -27,15 +27,26 @@
       {{ project().description }}
     </p>
 
-    <!-- Affichage de la date de début avec le pipe date -->
-    @if (project().startDate) {
-      <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-4 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        <span>Début : {{ project().startDate | date:'dd MMMM y' }}</span>
-      </div>
-    }
+    <!-- Métadonnées du projet : Date de début (date) et Budget (currency) -->
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500 mb-4 font-medium">
+      @if (project().startDate) {
+        <div class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>Début : {{ project().startDate | date:'dd MMMM y' }}</span>
+        </div>
+      }
+
+      @if (project().budget !== undefined) {
+        <div class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Budget : {{ project().budget | currency:'TND':'code':'1.2-2' }}</span>
+        </div>
+      }
+    </div>
 
     <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
     <div class="pt-4 border-t border-slate-100">
