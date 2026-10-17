@@ -46,13 +46,26 @@
           <span>Budget : {{ project().budget | currency:'TND':'code':'1.2-2' }}</span>
         </div>
       }
+
+      <!-- Taux de réalisation (pipe percent) -->
+      <div class="flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span>Réalisation : {{ completionRate() | percent:'1.0-0' }}</span>
+      </div>
     </div>
 
     <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
     <div class="pt-4 border-t border-slate-100">
-      <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
-        Tâches du projet ({{ project().tasks.length }})
-      </h4>
+      <div class="flex items-center justify-between mb-3">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          Tâches du projet ({{ project().tasks.length }})
+        </h4>
+        <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 shadow-2xs">
+          {{ completionRate() | percent:'1.0-0' }}
+        </span>
+      </div>
       <app-task-list [tasks]="project().tasks" />
     </div>
   </div>

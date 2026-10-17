@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Project, ProjectStatus } from '../../models/project.model';
 import { TaskList } from '../task-list/task-list';
 
@@ -19,6 +19,16 @@ export class ProjectCard {
 
   // Partie 6.5 : Output pour informer le parent lors de la sélection
   readonly projectSelected = output<Project>();
+
+  // Taux de réalisation calculé dans la classe (tâches terminées / total)
+  readonly completionRate = computed<number>(() => {
+    const tasks = this.project().tasks;
+    if (!tasks || tasks.length === 0) {
+      return 0;
+    }
+    const completedCount = tasks.filter((t) => t.status === 'Terminé').length;
+    return completedCount / tasks.length;
+  });
 
   // Partie 6.4 & 6.5 : Méthode appelée au clic sur le bouton Sélectionner
   selectProject(): void {
