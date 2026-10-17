@@ -30,6 +30,16 @@ export class ProjectCard {
     return completedCount / tasks.length;
   });
 
+  // Coût moyen par tâche (budget / nombre de tâches)
+  readonly averageCostPerTask = computed<number>(() => {
+    const budget = this.project().budget ?? 0;
+    const taskCount = this.project().tasks?.length ?? 0;
+    if (taskCount === 0) {
+      return 0;
+    }
+    return budget / taskCount;
+  });
+
   // Partie 6.4 & 6.5 : Méthode appelée au clic sur le bouton Sélectionner
   selectProject(): void {
     this.projectSelected.emit(this.project());

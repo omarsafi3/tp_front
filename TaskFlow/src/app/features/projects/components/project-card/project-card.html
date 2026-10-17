@@ -54,6 +54,16 @@
         </svg>
         <span>Réalisation : {{ completionRate() | percent:'1.0-0' }}</span>
       </div>
+
+      <!-- Coût moyen par tâche (pipe number) -->
+      @if (project().tasks.length > 0 && project().budget !== undefined) {
+        <div class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          <span>Coût moyen/tâche : {{ averageCostPerTask() | number:'1.0-0' }}</span>
+        </div>
+      }
     </div>
 
     <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
