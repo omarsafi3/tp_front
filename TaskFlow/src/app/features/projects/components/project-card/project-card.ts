@@ -20,22 +20,22 @@ export class ProjectCard {
   // Partie 6.5 : Output pour informer le parent lors de la sélection
   readonly projectSelected = output<Project>();
 
-  // Taux de réalisation calculé dans la classe (tâches terminées / total)
-  readonly completionRate = computed<number>(() => {
+  // Taux de réalisation calculé dans la classe uniquement si des tâches existent (> 0)
+  readonly completionRate = computed<number | null>(() => {
     const tasks = this.project().tasks;
     if (!tasks || tasks.length === 0) {
-      return 0;
+      return null;
     }
     const completedCount = tasks.filter((t) => t.status === 'Terminé').length;
     return completedCount / tasks.length;
   });
 
-  // Coût moyen par tâche (budget / nombre de tâches)
-  readonly averageCostPerTask = computed<number>(() => {
-    const budget = this.project().budget ?? 0;
+  // Coût moyen par tâche (budget / nombre de tâches) uniquement si tasks.length > 0
+  readonly averageCostPerTask = computed<number | null>(() => {
     const taskCount = this.project().tasks?.length ?? 0;
-    if (taskCount === 0) {
-      return 0;
+    const budget = this.project().budget;
+    if (taskCount === 0 || budget === undefined) {
+      return null;
     }
     return budget / taskCount;
   });
