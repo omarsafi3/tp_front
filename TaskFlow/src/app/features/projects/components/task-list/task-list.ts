@@ -5,11 +5,12 @@ import { User } from '../../../users/models/user.model';
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 
 import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
+import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, TruncatePipe],
+  imports: [CommonModule, TruncatePipe, DeadlinePipe],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
 })
