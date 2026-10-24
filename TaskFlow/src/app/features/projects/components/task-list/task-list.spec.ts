@@ -95,4 +95,39 @@ describe('TaskList', () => {
     expect(component.getAssigneeName(undefined)).toBe('Non assigné');
     expect(component.getAssigneeName(9999)).toBe('Non assigné');
   });
+
+  it('should emit taskDelete when child TaskItem triggers deletion', async () => {
+    fixture.componentRef.setInput('tasks', mockTasks);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    let deletedTaskId: number | null = null;
+    component.taskDelete.subscribe((ev) => {
+      deletedTaskId = ev.taskId;
+    });
+
+    const taskItems = fixture.debugElement.queryAll(By.directive(TaskItem));
+    taskItems[0].componentInstance.taskDelete.emit(1);
+
+    expect(deletedTaskId).toBe(1);
+  });
+
+  it('should filter tasks by status (Toutes, En cours, Terminé)', async () => {
+    fixture.componentRef.setInput('tasks', mockTasks);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // Default 'Toutes'
+    expect(component.filteredTasks().length).toBe(2);
+
+    // Filter 'Terminé'
+    component.setTaskFilter('Terminé');
+    expect(component.filteredTasks().length).toBe(1);
+    expect(component.filteredTasks()[0].id).toBe(1);
+
+    // Filter 'En cours'
+    component.setTaskFilter('En cours');
+    expect(component.filteredTasks().length).toBe(1);
+    expect(component.filteredTasks()[0].id).toBe(2);
+  });
 });

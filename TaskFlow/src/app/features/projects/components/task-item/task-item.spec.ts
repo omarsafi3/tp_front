@@ -216,4 +216,18 @@ describe('TaskItem', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('AB');
   });
+
+  it('should emit taskDelete when clicking delete button', () => {
+    let deletedId: number | null = null;
+    component.taskDelete.subscribe((id) => {
+      deletedId = id;
+    });
+
+    fixture.detectChanges();
+    const deleteBtn = fixture.debugElement.query(By.css('.task-delete-btn'));
+    expect(deleteBtn).toBeTruthy();
+
+    deleteBtn.nativeElement.click();
+    expect(deletedId).toBe(1);
+  });
 });

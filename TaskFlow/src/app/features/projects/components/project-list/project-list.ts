@@ -4,7 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../../core/services/project.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 import { Project } from '../../models/project.model';
-import { ProjectCard, ProjectTaskStatusChangeEvent } from '../project-card/project-card';
+import {
+  ProjectCard,
+  ProjectTaskDeleteEvent,
+  ProjectTaskStatusChangeEvent,
+} from '../project-card/project-card';
 
 @Component({
   selector: 'app-project-list',
@@ -64,6 +68,30 @@ export class ProjectList implements OnInit {
     );
 
     // Mettre à jour selectedProject si c'est le projet dont la tâche a changé
+    const sel = this.selectedProject();
+    if (sel && sel.id === event.projectId) {
+      const updated = this.projects().find((p) => p.id === event.projectId);
+      if (updated) {
+        this.selectedProject.set(updated);
+      }
+    }
+  }
+
+  // Bonus 7.1 : Suppression immuable d'une tâche et mise à jour du Signal projects
+  onTaskDelete(event: ProjectTaskDeleteEvent): void {
+    this.projects.update((currentProjects) =>
+      currentProjects.map((project) => {
+        if (project.id !== event.projectId) {
+          return project;
+        }
+        return {
+          ...project,
+          tasks: project.tasks.filter((t) => t.id !== event.taskId),
+        };
+      })
+    );
+
+    // Mettre à jour selectedProject si nécessaire
     const sel = this.selectedProject();
     if (sel && sel.id === event.projectId) {
       const updated = this.projects().find((p) => p.id === event.projectId);

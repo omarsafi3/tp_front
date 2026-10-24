@@ -15,6 +15,7 @@ import { InitialsPipe } from '../../../../shared/pipes/initials-pipe';
 import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
 import { OverdueDirective } from '../../../../shared/directives/overdue.directive';
 import { TooltipDirective } from '../../../../shared/directives/tooltip.directive';
+import { TaskStatusBadge } from '../../../../shared/components/task-status-badge/task-status-badge';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../users/models/user.model';
 
@@ -29,6 +30,7 @@ import { User } from '../../../users/models/user.model';
     HighlightDirective,
     OverdueDirective,
     TooltipDirective,
+    TaskStatusBadge,
   ],
   templateUrl: './task-item.html',
   styleUrl: './task-item.css',
@@ -47,6 +49,9 @@ export class TaskItem implements OnInit {
 
   // Événement taskStatusChange déclaré avec l'API moderne output()
   readonly taskStatusChange = output<TaskStatus>();
+
+  // Bonus 7.1 : Événement taskDelete émis lors du clic sur le bouton Supprimer
+  readonly taskDelete = output<number>();
 
   // Liste des utilisateurs pour résolution si non transmis
   readonly users = signal<User[]>([]);
@@ -91,6 +96,13 @@ export class TaskItem implements OnInit {
   changeStatus(): void {
     const nextStatus = this.getNextStatus(this.task().status);
     this.taskStatusChange.emit(nextStatus);
+  }
+
+  /**
+   * Bonus 7.1 : Méthode appelée au clic sur le bouton Supprimer
+   */
+  deleteTask(): void {
+    this.taskDelete.emit(this.task().id);
   }
 
   /**

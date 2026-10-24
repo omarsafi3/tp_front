@@ -2,12 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { Project, ProjectStatus } from '../../models/project.model';
 import { TaskStatus } from '../../models/task.model';
-import { TaskList, TaskStatusChangeEvent } from '../task-list/task-list';
+import { TaskDeleteEvent, TaskList, TaskStatusChangeEvent } from '../task-list/task-list';
 
 export interface ProjectTaskStatusChangeEvent {
   projectId: number;
   taskId: number;
   newStatus: TaskStatus;
+}
+
+export interface ProjectTaskDeleteEvent {
+  projectId: number;
+  taskId: number;
 }
 
 @Component({
@@ -29,6 +34,9 @@ export class ProjectCard {
 
   // Événement taskStatusChange enrichi avec projectId et transmis au parent
   readonly taskStatusChange = output<ProjectTaskStatusChangeEvent>();
+
+  // Bonus 7.1 : Événement taskDelete enrichi avec projectId et transmis au parent
+  readonly taskDelete = output<ProjectTaskDeleteEvent>();
 
   // Partie 4.3 : Signal computed calculant le nombre de tâches terminées
   readonly completedTasksCount = computed<number>(() => {
@@ -116,6 +124,16 @@ export class ProjectCard {
       projectId: this.project().id,
       taskId: event.taskId,
       newStatus: event.newStatus,
+    });
+  }
+
+  /**
+   * Bonus 7.1 : Remontée de l'événement taskDelete vers ProjectList avec projectId
+   */
+  onTaskDelete(event: TaskDeleteEvent): void {
+    this.taskDelete.emit({
+      projectId: this.project().id,
+      taskId: event.taskId,
     });
   }
 

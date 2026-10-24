@@ -116,4 +116,20 @@ describe('ProjectList', () => {
     expect(projectCards.length).toBe(1);
     expect(projectCards[0].componentInstance.project().name).toBe('Projet Beta');
   });
+
+  it('should remove a task from the specified project immutably on taskDelete', () => {
+    component.onTaskDelete({
+      projectId: 1,
+      taskId: 10,
+    });
+
+    const projectAlpha = component.projects().find((p) => p.id === 1);
+    expect(projectAlpha?.tasks.some((t) => t.id === 10)).toBe(false);
+    expect(projectAlpha?.tasks.length).toBe(1);
+    expect(projectAlpha?.tasks[0].id).toBe(11);
+
+    // Other projects remain untouched
+    const projectBeta = component.projects().find((p) => p.id === 2);
+    expect(projectBeta?.tasks.length).toBe(1);
+  });
 });

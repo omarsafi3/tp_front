@@ -1,16 +1,64 @@
 <div class="task-list space-y-2.5">
-  <!-- Partie 2.2 & 2.3 : @for avec track task.id et @empty pour "Aucune tâche" -->
-  @for (task of tasks(); track task.id) {
+  <!-- Bonus 7.2 : Filtre de statut des tâches (Toutes, En cours, Terminé) affiché quand des tâches existent -->
+  @if (tasks().length > 0) {
+    <div class="flex items-center justify-between gap-2 pb-1">
+      <span class="text-[10px] uppercase font-bold text-slate-400">Filtrer les tâches :</span>
+      <div class="inline-flex p-0.5 rounded-lg bg-slate-100 border border-slate-200/60 text-[10px] font-semibold">
+        <button
+          type="button"
+          (click)="setTaskFilter('Toutes')"
+          class="filter-btn-all px-2 py-0.5 rounded-md transition-all cursor-pointer"
+          [class.bg-white]="taskFilter() === 'Toutes'"
+          [class.text-slate-900]="taskFilter() === 'Toutes'"
+          [class.shadow-2xs]="taskFilter() === 'Toutes'"
+          [class.text-slate-500]="taskFilter() !== 'Toutes'"
+        >
+          Toutes
+        </button>
+        <button
+          type="button"
+          (click)="setTaskFilter('En cours')"
+          class="filter-btn-in-progress px-2 py-0.5 rounded-md transition-all cursor-pointer"
+          [class.bg-white]="taskFilter() === 'En cours'"
+          [class.text-blue-700]="taskFilter() === 'En cours'"
+          [class.shadow-2xs]="taskFilter() === 'En cours'"
+          [class.text-slate-500]="taskFilter() !== 'En cours'"
+        >
+          En cours
+        </button>
+        <button
+          type="button"
+          (click)="setTaskFilter('Terminé')"
+          class="filter-btn-done px-2 py-0.5 rounded-md transition-all cursor-pointer"
+          [class.bg-white]="taskFilter() === 'Terminé'"
+          [class.text-emerald-700]="taskFilter() === 'Terminé'"
+          [class.shadow-2xs]="taskFilter() === 'Terminé'"
+          [class.text-slate-500]="taskFilter() !== 'Terminé'"
+        >
+          Terminées
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Partie 2.2 & 2.3 : @for avec track task.id et filteredTasks() -->
+  @for (task of filteredTasks(); track task.id) {
     <!-- Partie 2.1, 2.2 & 2.5 : Utilisation de TaskItem avec property binding [task] et [showAssignee] -->
+    <!-- Bonus 7.1 : Écoute de l'événement (taskDelete) -->
     <app-task-item
       [task]="task"
       [showAssignee]="showAssignee()"
       [assigneeName]="getAssigneeName(task.assigneeId)"
       (taskStatusChange)="onTaskStatusChange(task.id, $event)"
+      (taskDelete)="onTaskDelete(task.id)"
     />
   } @empty {
     <div class="text-xs text-slate-400 font-medium py-5 text-center bg-slate-50/70 rounded-xl border border-dashed border-slate-200">
-      Aucune tâche
+      @if (taskFilter() === 'Toutes') {
+        Aucune tâche
+      } @else {
+        Aucune tâche {{ taskFilter() === 'En cours' ? 'en cours' : 'terminée' }}
+      }
     </div>
   }
 </div>

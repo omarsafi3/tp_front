@@ -105,4 +105,17 @@ describe('ProjectCard', () => {
     component.selectProject();
     expect(selected).toEqual(mockProject);
   });
+
+  it('should emit taskDelete with projectId when task deletion is triggered', () => {
+    let deleteEvent: { projectId: number; taskId: number } | null = null;
+    component.taskDelete.subscribe((ev) => {
+      deleteEvent = ev;
+    });
+
+    component.onTaskDelete({ taskId: 101 });
+    expect(deleteEvent).toEqual({
+      projectId: 42,
+      taskId: 101,
+    });
+  });
 });
