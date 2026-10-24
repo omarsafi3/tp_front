@@ -29,10 +29,10 @@
                 {{ task.title }}
               </span>
 
-              <!-- Description tronquée à 40 caractères -->
-              @if (task.description) {
+              <!-- Description tronquée affichée uniquement si elle existe -->
+              @if (task.description; as desc) {
                 <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words">
-                  {{ task.description | truncate:40 }}
+                  {{ desc | truncate:40 }}
                 </p>
               }
             </div>
@@ -51,28 +51,39 @@
                 </span>
               }
 
-              <!-- Échéance avec date formatée et texte relatif via DeadlinePipe -->
-              @if (task.dueDate) {
+              <!-- Échéance : @if avec alias (mot-clé as) pour ne pas répéter l'expression -->
+              @if (task.dueDate; as dueDate) {
                 <span class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200/50">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>{{ task.dueDate | date:'dd/MM/yyyy' }} · {{ task.dueDate | deadline }}</span>
+                  <span>{{ dueDate | date:'dd/MM/yyyy' }} · {{ dueDate | deadline }}</span>
                 </span>
               } @else {
                 <span class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 italic bg-slate-50/60 px-2 py-0.5 rounded border border-dashed border-slate-200/50">
-                  <span>{{ task.dueDate | deadline }}</span>
+                  <span>Aucune échéance</span>
                 </span>
               }
             </div>
 
             <!-- Badges Priorité & Statut -->
             <div class="flex items-center gap-1.5 shrink-0">
+              <!-- Symbole devant la priorité avec @switch -->
               <span
                 class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border shadow-2xs"
                 [ngClass]="getPriorityBadgeClass(task.priority)"
               >
-                {{ task.priority }}
+                @switch (task.priority) {
+                  @case ('Haute') {
+                    <span>▲ Haute</span>
+                  }
+                  @case ('Moyenne') {
+                    <span>● Moyenne</span>
+                  }
+                  @default {
+                    <span>▼ Basse</span>
+                  }
+                }
               </span>
 
               <span
