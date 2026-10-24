@@ -32,14 +32,15 @@ describe('TaskItem', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display "▲" for priority Haute', () => {
+  it('should display "▲" for priority Haute with rose badge classes', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('▲');
     expect(compiled.textContent).toContain('Haute');
+    expect(component.getPriorityBadgeClass('Haute')).toContain('bg-rose-100');
   });
 
-  it('should display "●" for priority Moyenne', async () => {
+  it('should display "●" for priority Moyenne with orange badge classes', async () => {
     fixture.componentRef.setInput('task', {
       ...mockTask,
       priority: 'Moyenne',
@@ -49,9 +50,10 @@ describe('TaskItem', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('●');
     expect(compiled.textContent).toContain('Moyenne');
+    expect(component.getPriorityBadgeClass('Moyenne')).toContain('bg-orange-100');
   });
 
-  it('should display "▼" for priority Basse', async () => {
+  it('should display "▼" for priority Basse with slate badge classes', async () => {
     fixture.componentRef.setInput('task', {
       ...mockTask,
       priority: 'Basse',
@@ -61,6 +63,17 @@ describe('TaskItem', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('▼');
     expect(compiled.textContent).toContain('Basse');
+    expect(component.getPriorityBadgeClass('Basse')).toContain('bg-slate-100');
+  });
+
+  it('should return appropriate Tailwind status classes', () => {
+    expect(component.getTaskStatusBorderClass('Terminé')).toContain('border-l-emerald-500');
+    expect(component.getTaskStatusBorderClass('En cours')).toContain('border-l-blue-500');
+    expect(component.getTaskStatusBorderClass('En attente')).toContain('border-l-amber-500');
+
+    expect(component.getStatusBadgeClass('Terminé')).toContain('bg-emerald-100');
+    expect(component.getStatusBadgeClass('En cours')).toContain('bg-blue-100');
+    expect(component.getStatusBadgeClass('En attente')).toContain('bg-amber-100');
   });
 
   it('should format due date with date pipe and deadline pipe', () => {

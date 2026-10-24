@@ -23,18 +23,24 @@ export class TaskItem {
   // Entrée obligatoire task avec l'API moderne input()
   readonly task = input.required<Task>();
 
+  /**
+   * Classes Tailwind pour la bordure latérale et le fond selon le statut
+   */
   getTaskStatusBorderClass(status: TaskStatus): string {
     switch (status) {
       case 'Terminé':
-        return 'border-l-4 border-emerald-500 bg-emerald-50/20 text-emerald-900';
+        return 'border-l-4 border-l-emerald-500 bg-emerald-50/25';
       case 'En cours':
-        return 'border-l-4 border-blue-500 bg-blue-50/20 text-blue-900';
+        return 'border-l-4 border-l-blue-500 bg-blue-50/25';
       case 'En attente':
       default:
-        return 'border-l-4 border-amber-500 bg-amber-50/20 text-amber-900';
+        return 'border-l-4 border-l-amber-500 bg-amber-50/25';
     }
   }
 
+  /**
+   * Classes Tailwind pour le badge de statut
+   */
   getStatusBadgeClass(status: TaskStatus): string {
     switch (status) {
       case 'Terminé':
@@ -47,6 +53,9 @@ export class TaskItem {
     }
   }
 
+  /**
+   * Classes Tailwind pour le badge de priorité
+   */
   getPriorityBadgeClass(priority: TaskPriority): string {
     switch (priority) {
       case 'Haute':
