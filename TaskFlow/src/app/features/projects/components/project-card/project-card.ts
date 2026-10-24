@@ -30,14 +30,22 @@ export class ProjectCard {
   // Événement taskStatusChange enrichi avec projectId et transmis au parent
   readonly taskStatusChange = output<ProjectTaskStatusChangeEvent>();
 
-  // Taux de réalisation calculé dans la classe uniquement si des tâches existent (> 0)
-  readonly completionRate = computed<number | null>(() => {
+  // Partie 4.3 : Signal computed calculant le nombre de tâches terminées
+  readonly completedTasksCount = computed<number>(() => {
     const tasks = this.project().tasks;
     if (!tasks || tasks.length === 0) {
+      return 0;
+    }
+    return tasks.filter((t) => t.status === 'Terminé').length;
+  });
+
+  // Partie 4.4 : Signal computed calculant le pourcentage d'avancement à partir de completedTasksCount()
+  readonly completionRate = computed<number | null>(() => {
+    const total = this.project().tasks?.length ?? 0;
+    if (total === 0) {
       return null;
     }
-    const completedCount = tasks.filter((t) => t.status === 'Terminé').length;
-    return completedCount / tasks.length;
+    return this.completedTasksCount() / total;
   });
 
   // Coût moyen par tâche (budget / nombre de tâches) uniquement si tasks.length > 0

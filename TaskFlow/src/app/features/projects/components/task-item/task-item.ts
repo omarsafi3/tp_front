@@ -13,6 +13,7 @@ import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
 import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
 import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
 import { OverdueDirective } from '../../../../shared/directives/overdue.directive';
+import { TooltipDirective } from '../../../../shared/directives/tooltip.directive';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../users/models/user.model';
 
@@ -25,6 +26,7 @@ import { User } from '../../../users/models/user.model';
     DeadlinePipe,
     HighlightDirective,
     OverdueDirective,
+    TooltipDirective,
   ],
   templateUrl: './task-item.html',
   styleUrl: './task-item.css',

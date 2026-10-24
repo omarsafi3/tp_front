@@ -1,10 +1,8 @@
 import {
   Directive,
-  ElementRef,
   HostBinding,
   Input,
   OnChanges,
-  Renderer2,
   SimpleChanges,
 } from '@angular/core';
 import { Task } from '../../features/projects/models/task.model';
@@ -15,95 +13,123 @@ import { Task } from '../../features/projects/models/task.model';
 })
 export class OverdueDirective implements OnChanges {
   /**
-   * Reçoit soit une tâche complète, soit une date d'échéance sous forme de chaîne.
+   * Date d'échéance (optionnelle)
    */
-  @Input('appOverdue') taskOrDueDate: Task | string | null | undefined;
+  @Input() dueDate?: string | Date | null;
 
   /**
-   * Statut de la tâche (optionnel si la tâche complète est passée à appOverdue).
+   * État de la tâche (boolean ou string 'Terminé')
+   */
+  @Input() done?: boolean | string;
+
+  /**
+   * Entrée directe via sélecteur [appOverdue]="task" ou [appOverdue]="dueDate"
+   */
+  @Input('appOverdue') taskOrDueDate?: Task | string | null;
+
+  /**
+   * Statut de la tâche pour rétrocompatibilité
    */
   @Input() status?: string;
 
   /**
-   * Date de référence (par défaut aujourd'hui).
+   * Date de référence (par défaut aujourd'hui)
    */
   @Input() referenceDate: Date = new Date();
 
   /**
-   * Indique si la tâche est actuellement en retard.
+   * Indique si la tâche est en retard
    */
   isOverdue = false;
 
-  @HostBinding('class.is-overdue')
-  get overdueClass(): boolean {
-    return this.isOverdue;
+  /**
+   * Classes Tailwind border-red-500 et bg-red-50 appliquées avec @HostBinding('class')
+   */
+  @HostBinding('class')
+  get overdueClasses(): string {
+    return this.isOverdue ? 'border-red-500 bg-red-50 is-overdue' : '';
   }
-
-  @HostBinding('class.border-rose-400')
-  get overdueBorderClass(): boolean {
-    return this.isOverdue;
-  }
-
-  @HostBinding('class.bg-rose-50/30')
-  get overdueBgClass(): boolean {
-    return this.isOverdue;
-  }
-
-  constructor(
-    private readonly el: ElementRef<HTMLElement>,
-    private readonly renderer: Renderer2
-  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.updateOverdueStatus();
   }
 
   private updateOverdueStatus(): void {
-    let dueDate: string | undefined;
-    let taskStatus: string | undefined = this.status;
+    let effectiveDueDate: string | Date | undefined = this.dueDate ?? undefined;
+    let isTaskDone = false;
 
+    // Évaluation de l'état "done"
+    if (typeof this.done === 'boolean') {
+      isTaskDone = this.done;
+    } else if (typeof this.done === 'string') {
+      isTaskDone = this.done === 'Terminé';
+    } else if (this.status) {
+      isTaskDone = this.status === 'Terminé';
+    }
+
+    // Support si un objet Task est transmis
     if (
       typeof this.taskOrDueDate === 'object' &&
       this.taskOrDueDate !== null &&
       'id' in this.taskOrDueDate
     ) {
       const task = this.taskOrDueDate as Task;
-      dueDate = task.dueDate;
-      if (!taskStatus) {
-        taskStatus = task.status;
+      if (!effectiveDueDate) {
+        effectiveDueDate = task.dueDate;
       }
-    } else if (typeof this.taskOrDueDate === 'string') {
-      dueDate = this.taskOrDueDate;
+      if (this.done === undefined && this.status === undefined) {
+        isTaskDone = task.status === 'Terminé';
+      }
+    } else if (typeof this.taskOrDueDate === 'string' && !effectiveDueDate) {
+      effectiveDueDate = this.taskOrDueDate;
     }
 
-    // Une tâche terminée n'est JAMAIS signalée comme en retard
-    if (taskStatus === 'Terminé') {
+    // Si la tâche est terminée : aucune classe et aucune erreur
+    if (isTaskDone) {
       this.isOverdue = false;
       return;
     }
 
-    if (!dueDate || !dueDate.trim()) {
+    // Si la date est absente : aucune classe et aucune erreur
+    if (!effectiveDueDate) {
       this.isOverdue = false;
       return;
     }
 
     let targetDate: Date;
-    const trimmed = dueDate.trim();
 
-    if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
-      const [year, month, day] = trimmed.split('T')[0].split('-').map(Number);
-      targetDate = new Date(year, month - 1, day);
-    } else {
-      const parsed = new Date(trimmed);
-      if (isNaN(parsed.getTime())) {
+    if (effectiveDueDate instanceof Date) {
+      if (isNaN(effectiveDueDate.getTime())) {
         this.isOverdue = false;
         return;
       }
       targetDate = new Date(
-        parsed.getFullYear(),
-        parsed.getMonth(),
-        parsed.getDate()
+        effectiveDueDate.getFullYear(),
+        effectiveDueDate.getMonth(),
+        effectiveDueDate.getDate()
       );
+    } else {
+      const trimmed = effectiveDueDate.trim();
+      if (!trimmed) {
+        this.isOverdue = false;
+        return;
+      }
+
+      if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+        const [year, month, day] = trimmed.split('T')[0].split('-').map(Number);
+        targetDate = new Date(year, month - 1, day);
+      } else {
+        const parsed = new Date(trimmed);
+        if (isNaN(parsed.getTime())) {
+          this.isOverdue = false;
+          return;
+        }
+        targetDate = new Date(
+          parsed.getFullYear(),
+          parsed.getMonth(),
+          parsed.getDate()
+        );
+      }
     }
 
     const ref = new Date(
@@ -112,7 +138,7 @@ export class OverdueDirective implements OnChanges {
       this.referenceDate.getDate()
     );
 
-    // En retard si la date d'échéance est strictement antérieure à aujourd'hui (minuit)
+    // En retard si l'échéance est strictement antérieure à la date de référence
     this.isOverdue = targetDate.getTime() < ref.getTime();
   }
 }

@@ -14,9 +14,15 @@ describe('ProjectCard', () => {
     tasks: [
       {
         id: 101,
-        title: 'Tâche test',
+        title: 'Tâche test 1',
         priority: 'Haute',
         status: 'En attente',
+      },
+      {
+        id: 102,
+        title: 'Tâche test 2',
+        priority: 'Moyenne',
+        status: 'Terminé',
       },
     ],
   };
@@ -34,6 +40,42 @@ describe('ProjectCard', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should compute completedTasksCount and completionRate accurately', () => {
+    expect(component.completedTasksCount()).toBe(1);
+    expect(component.completionRate()).toBe(0.5); // 1 / 2 = 50%
+  });
+
+  it('should update completedTasksCount and completionRate immediately when project tasks change', async () => {
+    fixture.componentRef.setInput('project', {
+      ...mockProject,
+      tasks: [
+        {
+          id: 101,
+          title: 'Tâche test 1',
+          priority: 'Haute',
+          status: 'Terminé',
+        },
+        {
+          id: 102,
+          title: 'Tâche test 2',
+          priority: 'Moyenne',
+          status: 'Terminé',
+        },
+      ],
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.completedTasksCount()).toBe(2);
+    expect(component.completionRate()).toBe(1); // 2 / 2 = 100%
+  });
+
+  it('should display completed tasks count in template', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('1/2 terminées');
   });
 
   it('should emit taskStatusChange with projectId without mutating input project', () => {

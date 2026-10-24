@@ -12,6 +12,8 @@ import { Task } from '../../features/projects/models/task.model';
     <div id="task-completed" [appOverdue]="completedPastTask" [referenceDate]="today">Tâche passée mais terminée</div>
     <div id="task-future" [appOverdue]="futureTask" [referenceDate]="today">Tâche future</div>
     <div id="task-no-date" [appOverdue]="noDueDateTask" [referenceDate]="today">Tâche sans date</div>
+    <div id="task-inputs" [appOverdue] [dueDate]="'2026-10-01'" [done]="false" [referenceDate]="today">Tâche avec inputs dueDate et done</div>
+    <div id="task-done-inputs" [appOverdue] [dueDate]="'2026-10-01'" [done]="true" [referenceDate]="today">Tâche avec done true</div>
   `,
 })
 class TestHostComponent {
@@ -61,14 +63,18 @@ describe('OverdueDirective', () => {
     fixture.detectChanges();
   });
 
-  it('should flag an unfinished past task as overdue', () => {
+  it('should flag an unfinished past task as overdue with Tailwind classes border-red-500 and bg-red-50', () => {
     const el = fixture.debugElement.query(By.css('#task-overdue'));
     expect(el.nativeElement.classList.contains('is-overdue')).toBe(true);
+    expect(el.nativeElement.classList.contains('border-red-500')).toBe(true);
+    expect(el.nativeElement.classList.contains('bg-red-50')).toBe(true);
   });
 
   it('should NOT flag a completed past task as overdue', () => {
     const el = fixture.debugElement.query(By.css('#task-completed'));
     expect(el.nativeElement.classList.contains('is-overdue')).toBe(false);
+    expect(el.nativeElement.classList.contains('border-red-500')).toBe(false);
+    expect(el.nativeElement.classList.contains('bg-red-50')).toBe(false);
   });
 
   it('should NOT flag a future task as overdue', () => {
@@ -79,5 +85,15 @@ describe('OverdueDirective', () => {
   it('should NOT flag a task without due date as overdue', () => {
     const el = fixture.debugElement.query(By.css('#task-no-date'));
     expect(el.nativeElement.classList.contains('is-overdue')).toBe(false);
+  });
+
+  it('should support separate dueDate and done inputs', () => {
+    const overdueEl = fixture.debugElement.query(By.css('#task-inputs'));
+    expect(overdueEl.nativeElement.classList.contains('border-red-500')).toBe(true);
+    expect(overdueEl.nativeElement.classList.contains('bg-red-50')).toBe(true);
+
+    const doneEl = fixture.debugElement.query(By.css('#task-done-inputs'));
+    expect(doneEl.nativeElement.classList.contains('border-red-500')).toBe(false);
+    expect(doneEl.nativeElement.classList.contains('bg-red-50')).toBe(false);
   });
 });

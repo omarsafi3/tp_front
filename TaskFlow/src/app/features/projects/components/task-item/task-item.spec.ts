@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TaskItem } from './task-item';
 import { Task } from '../../models/task.model';
+import { TooltipDirective } from '../../../../shared/directives/tooltip.directive';
 
 describe('TaskItem', () => {
   let component: TaskItem;
@@ -147,5 +148,22 @@ describe('TaskItem', () => {
 
     statusBtn.nativeElement.click();
     expect(emittedStatus).toBe('Terminé');
+  });
+
+  it('should display full description tooltip on hover over truncated description', () => {
+    fixture.detectChanges();
+    const descEl = fixture.debugElement.query(By.directive(TooltipDirective));
+    expect(descEl).toBeTruthy();
+
+    descEl.triggerEventHandler('mouseenter', null);
+    fixture.detectChanges();
+
+    const bubble = (descEl.nativeElement as HTMLElement).querySelector('.app-tooltip-bubble');
+    expect(bubble).toBeTruthy();
+    expect(bubble?.textContent).toBe(mockTask.description!);
+
+    descEl.triggerEventHandler('mouseleave', null);
+    fixture.detectChanges();
+    expect((descEl.nativeElement as HTMLElement).querySelector('.app-tooltip-bubble')).toBeNull();
   });
 });

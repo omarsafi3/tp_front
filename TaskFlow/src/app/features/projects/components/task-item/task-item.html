@@ -2,6 +2,8 @@
   class="task-item flex flex-col gap-2 p-3 rounded-xl border border-slate-200/90 bg-white shadow-2xs hover:shadow-xs transition-all duration-150"
   appHighlight
   [appOverdue]="task()"
+  [dueDate]="task().dueDate"
+  [done]="task().status === 'Terminé'"
   [ngClass]="getTaskStatusBorderClass(task().status)"
 >
   <!-- Section 1 : Titre + Description à gauche, Badges Priorité et Statut à droite -->
@@ -23,9 +25,12 @@
           {{ task().title }}
         </span>
 
-        <!-- Description affichée uniquement si elle existe -->
+        <!-- Description affichée uniquement si elle existe avec infobulle complète via TooltipDirective -->
         @if (task().description; as desc) {
-          <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words">
+          <p
+            class="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words cursor-help"
+            [appTooltip]="desc"
+          >
             {{ desc | truncate:40 }}
           </p>
         }
