@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { TaskItem } from './task-item';
 import { Task } from '../../models/task.model';
 
@@ -85,5 +86,32 @@ describe('TaskItem', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Aucune échéance');
+  });
+
+  it('should NOT flag a completed task as overdue even if dueDate is past', async () => {
+    fixture.componentRef.setInput('task', {
+      id: 1,
+      title: 'Tâche terminée passée',
+      priority: 'Haute',
+      status: 'Terminé',
+      dueDate: '2026-09-01',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const mainEl = fixture.debugElement.query(By.css('.task-item'));
+    expect(mainEl.nativeElement.classList.contains('is-overdue')).toBe(false);
+  });
+
+  it('should apply highlight directive on hover', () => {
+    const mainEl = fixture.debugElement.query(By.css('.task-item'));
+    const initialBg = (mainEl.nativeElement as HTMLElement).style.backgroundColor;
+
+    mainEl.triggerEventHandler('mouseenter', null);
+    fixture.detectChanges();
+    expect((mainEl.nativeElement as HTMLElement).style.backgroundColor).toBe('rgb(241, 245, 249)');
+
+    mainEl.triggerEventHandler('mouseleave', null);
+    fixture.detectChanges();
+    expect((mainEl.nativeElement as HTMLElement).style.backgroundColor).toBe(initialBg);
   });
 });

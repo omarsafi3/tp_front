@@ -3,11 +3,19 @@ import { Component, input } from '@angular/core';
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
 import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
+import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { OverdueDirective } from '../../../../shared/directives/overdue.directive';
 
 @Component({
   selector: 'app-task-item',
   standalone: true,
-  imports: [CommonModule, TruncatePipe, DeadlinePipe],
+  imports: [
+    CommonModule,
+    TruncatePipe,
+    DeadlinePipe,
+    HighlightDirective,
+    OverdueDirective,
+  ],
   templateUrl: './task-item.html',
   styleUrl: './task-item.css',
 })
