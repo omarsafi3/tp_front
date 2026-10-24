@@ -4,6 +4,7 @@ import { Project } from '../../../projects/models/project.model';
 import { Task } from '../../../projects/models/task.model';
 import { User } from '../../models/user.model';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
+import { InitialsPipe } from '../../../../shared/pipes/initials-pipe';
 import { UserProjectGroup } from '../user-project-group/user-project-group';
 
 export interface UserProjectGroupData {
@@ -15,7 +16,7 @@ export interface UserProjectGroupData {
 @Component({
   selector: 'app-user-card',
   standalone: true,
-  imports: [CommonModule, UserProjectGroup, EmptyState],
+  imports: [CommonModule, UserProjectGroup, EmptyState, InitialsPipe],
   templateUrl: './user-card.html',
   styleUrl: './user-card.css',
 })
