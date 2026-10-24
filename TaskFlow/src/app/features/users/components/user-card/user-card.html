@@ -8,8 +8,11 @@
     <!-- En-tête : Avatar + Informations utilisateur + Badge Actif/Inactif -->
     <div class="flex items-start justify-between gap-3 mb-4">
       <div class="flex items-center gap-3 min-w-0">
-        <!-- Avatar Initiales (pastille ronde avec InitialsPipe) -->
-        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center text-sm font-black shadow-sm shrink-0 ring-2 ring-indigo-100">
+        <!-- Avatar Initiales : pastille ronde avec ngStyle selon le rôle -->
+        <div
+          class="w-11 h-11 rounded-full text-white flex items-center justify-center text-sm font-black shadow-sm shrink-0 ring-2 ring-slate-100"
+          [ngStyle]="{ backgroundColor: avatarBgColor }"
+        >
           {{ user().name | initials }}
         </div>
 
@@ -25,20 +28,14 @@
         </div>
       </div>
 
-      <!-- Badge Actif / Inactif -->
+      <!-- Badge Actif / Inactif : géré avec ngClass (vert si actif, gris sinon) -->
       <span
         class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0"
-        [class.bg-emerald-50]="user().active"
-        [class.text-emerald-700]="user().active"
-        [class.border-emerald-200]="user().active"
-        [class.bg-slate-100]="!user().active"
-        [class.text-slate-500]="!user().active"
-        [class.border-slate-200]="!user().active"
+        [ngClass]="user().active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
       >
         <span
           class="w-1.5 h-1.5 rounded-full"
-          [class.bg-emerald-500]="user().active"
-          [class.bg-slate-400]="!user().active"
+          [ngClass]="user().active ? 'bg-emerald-500' : 'bg-slate-400'"
         ></span>
         {{ user().active ? 'Actif' : 'Inactif' }}
       </span>

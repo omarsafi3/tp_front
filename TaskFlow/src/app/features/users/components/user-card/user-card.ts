@@ -27,6 +27,21 @@ export class UserCard {
 
   readonly userSelected = output<User>();
 
+  // Objet de correspondance rôle -> couleur pour la pastille d'initiales
+  readonly roleColors: Record<string, string> = {
+    'Développeur': '#4f46e5', // Indigo
+    'Développeur Fullstack': '#0284c7', // Bleu ciel / Océan
+    'UI/UX Designer': '#db2777', // Rose fuchsia
+    'Chef de projet': '#7c3aed', // Violet
+  };
+
+  /**
+   * Couleur de fond de la pastille d'initiales selon le rôle de l'utilisateur
+   */
+  get avatarBgColor(): string {
+    return this.roleColors[this.user().role] ?? '#64748b';
+  }
+
   // Regroupement des tâches assignées par projet
   readonly projectGroups = computed<UserProjectGroupData[]>(() => {
     const currentUserId = this.user().id;
