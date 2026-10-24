@@ -1,15 +1,15 @@
 <!-- Partie 9 : Fond blanc, ombre, coins arrondis, padding et espacement -->
 <div
-  class="project-card bg-white shadow-md rounded-2xl p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg"
+  class="project-card bg-white shadow-md rounded-2xl p-5 sm:p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg"
   [class.ring-2]="isSelected()"
   [class.ring-indigo-500]="isSelected()"
   [class.border-indigo-300]="isSelected()"
 >
   <div>
-    <!-- En-tête : Nom du projet et Statut -->
-    <div class="flex items-start justify-between gap-3 mb-3">
+    <!-- En-tête : Nom du projet et Statut avec flex-wrap anti-collision -->
+    <div class="flex items-start justify-between gap-2.5 mb-3">
       <!-- Partie 6.1 : Interpolation du nom du projet en majuscules (uppercase) -->
-      <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
+      <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug break-words flex-1 min-w-0">
         {{ project().name | uppercase }}
       </h3>
 
@@ -23,12 +23,12 @@
     </div>
 
     <!-- Partie 6.1 : Interpolation de la description du projet -->
-    <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+    <p class="text-sm text-slate-600 mb-4 leading-relaxed break-words">
       {{ project().description }}
     </p>
 
-    <!-- Métadonnées du projet (KPIs) en grille élégante 2 colonnes -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 rounded-xl bg-slate-50/80 border border-slate-100 mb-4 text-xs">
+    <!-- Métadonnées du projet (KPIs) en grille élégante 2 colonnes sans débordement -->
+    <div class="grid grid-cols-2 gap-2 p-3 rounded-xl bg-slate-50/80 border border-slate-100 mb-4 text-xs">
       <!-- Date de début (date:'dd MMMM y') -->
       @if (project().startDate) {
         <div class="flex items-center gap-2 min-w-0">
@@ -37,10 +37,10 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Début</p>
             <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
-              {{ project().startDate | date:'dd MMMM y' }}
+              {{ project().startDate | date:'dd MMM y' }}
             </p>
           </div>
         </div>
@@ -54,10 +54,10 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Budget</p>
             <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
-              {{ project().budget | currency:'TND':'code':'1.2-2' }}
+              {{ project().budget | currency:'TND':'code':'1.0-0' }}
             </p>
           </div>
         </div>
@@ -71,7 +71,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Réalisation</p>
             <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
               {{ completionRate() | percent:'1.0-0' }}
@@ -88,7 +88,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
             </svg>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Coût / tâche</p>
             <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
               {{ averageCostPerTask() | number:'1.0-0' }} TND
@@ -100,31 +100,31 @@
 
     <!-- Section Avancement & Barre de progression -->
     <div class="mb-4">
-      <div class="flex items-center justify-between text-xs mb-1.5 font-medium">
+      <div class="flex flex-wrap items-center justify-between gap-1 text-xs mb-1.5 font-medium">
         <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
           Avancement ({{ completedTasksCount() }}/{{ project().tasks.length }} terminées)
         </span>
         <span
-          class="font-bold text-xs"
+          class="font-bold text-xs shrink-0"
           [class.text-slate-400]="project().tasks.length === 0"
           [class.text-emerald-600]="project().tasks.length > 0 && completionRate() === 1"
           [class.text-amber-600]="project().tasks.length > 0 && (completionRate() ?? 0) > 0 && completionRate() !== 1"
           [class.text-rose-600]="project().tasks.length > 0 && (completionRate() ?? 0) === 0"
         >
           @if (project().tasks.length === 0) {
-            Aucune tâche pour le moment
+            Aucune tâche
           } @else if (completionRate() === 1) {
             Projet terminé
           } @else if ((completionRate() ?? 0) > 0) {
             En progression
           } @else {
-            Pas encore démarré
+            Pas démarré
           }
         </span>
       </div>
 
-      <!-- Barre de progression (w-full bg-gray-200 rounded-full h-2) avec ngStyle et accesseur barColor -->
-      <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
+      <!-- Barre de progression (w-full bg-slate-100 rounded-full h-2) avec ngStyle et accesseur barColor -->
+      <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden shadow-inner">
         <div
           class="h-2 rounded-full transition-all duration-300"
           [ngStyle]="{
@@ -137,13 +137,13 @@
 
     <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
     <div class="pt-4 border-t border-slate-100">
-      <div class="flex items-center justify-between mb-2">
+      <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
           Tâches ({{ (project().tasks | slice:0:3).length }} sur {{ project().tasks.length }})
         </h4>
         @if (project().tasks.length > 0 && completionRate() !== null) {
-          <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 shadow-2xs">
-            {{ completedTasksCount() }} / {{ project().tasks.length }} terminées &bull; {{ completionRate() | percent:'1.0-0' }}
+          <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 shadow-2xs shrink-0">
+            {{ completionRate() | percent:'1.0-0' }}
           </span>
         }
       </div>

@@ -1,8 +1,8 @@
 <div class="task-list space-y-2.5">
   <!-- Bonus 7.2 : Filtre de statut des tâches (Toutes, En cours, Terminé) affiché quand des tâches existent -->
   @if (tasks().length > 0) {
-    <div class="flex items-center justify-between gap-2 pb-1">
-      <span class="text-[10px] uppercase font-bold text-slate-400">Filtrer les tâches :</span>
+    <div class="flex flex-wrap items-center justify-between gap-1.5 pb-1">
+      <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Filtrer :</span>
       <div class="inline-flex p-0.5 rounded-lg bg-slate-100 border border-slate-200/60 text-[10px] font-semibold">
         <button
           type="button"
@@ -53,7 +53,7 @@
       (taskDelete)="onTaskDelete(task.id)"
     />
   } @empty {
-    <div class="text-xs text-slate-400 font-medium py-5 text-center bg-slate-50/70 rounded-xl border border-dashed border-slate-200">
+    <div class="text-xs text-slate-400 font-medium py-4 text-center bg-slate-50/70 rounded-xl border border-dashed border-slate-200">
       @if (taskFilter() === 'Toutes') {
         Aucune tâche
       } @else {

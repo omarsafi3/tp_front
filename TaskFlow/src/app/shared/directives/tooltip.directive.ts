@@ -66,7 +66,9 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.addClass(this.tooltipElement, 'shadow-lg');
     this.renderer.addClass(this.tooltipElement, 'pointer-events-none');
     this.renderer.addClass(this.tooltipElement, 'whitespace-normal');
-    this.renderer.addClass(this.tooltipElement, 'max-w-xs');
+    this.renderer.addClass(this.tooltipElement, 'break-words');
+    this.renderer.addClass(this.tooltipElement, 'max-w-[240px]');
+    this.renderer.addClass(this.tooltipElement, 'sm:max-w-xs');
     this.renderer.addClass(this.tooltipElement, 'w-max');
     this.renderer.addClass(this.tooltipElement, 'border');
     this.renderer.addClass(this.tooltipElement, 'border-slate-700');
