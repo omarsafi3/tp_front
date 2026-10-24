@@ -9,7 +9,7 @@
     <!-- En-tête : Nom du projet et Statut -->
     <div class="flex items-start justify-between gap-3 mb-3">
       <!-- Partie 6.1 : Interpolation du nom du projet en majuscules (uppercase) -->
-      <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+      <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
         {{ project().name | uppercase }}
       </h3>
 
@@ -23,69 +23,87 @@
     </div>
 
     <!-- Partie 6.1 : Interpolation de la description du projet -->
-    <p class="text-sm text-slate-600 mb-3 leading-relaxed">
+    <p class="text-sm text-slate-600 mb-4 leading-relaxed">
       {{ project().description }}
     </p>
 
-    <!-- Métadonnées du projet : Date de début (date) et Budget (currency) -->
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500 mb-4 font-medium">
+    <!-- Métadonnées du projet (KPIs) en grille élégante 2 colonnes -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 rounded-xl bg-slate-50/80 border border-slate-100 mb-4 text-xs">
+      <!-- Date de début (date:'dd MMMM y') -->
       @if (project().startDate) {
-        <div class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span>Début : {{ project().startDate | date:'dd MMMM y' }}</span>
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Début</p>
+            <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
+              {{ project().startDate | date:'dd MMMM y' }}
+            </p>
+          </div>
         </div>
       }
 
+      <!-- Budget (currency) -->
       @if (project().budget !== undefined) {
-        <div class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>Budget : {{ project().budget | currency:'TND':'code':'1.2-2' }}</span>
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Budget</p>
+            <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
+              {{ project().budget | currency:'TND':'code':'1.2-2' }}
+            </p>
+          </div>
         </div>
       }
 
-      <!-- Taux de réalisation (pipe percent) : uniquement si project.tasks.length > 0 -->
+      <!-- Taux de réalisation (percent) -->
       @if (project().tasks.length > 0 && completionRate() !== null) {
-        <div class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <span>Réalisation : {{ completionRate() | percent:'1.0-0' }}</span>
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Réalisation</p>
+            <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
+              {{ completionRate() | percent:'1.0-0' }}
+            </p>
+          </div>
         </div>
       }
 
-      <!-- Coût moyen par tâche (pipe number) : uniquement si project.tasks.length > 0 -->
+      <!-- Coût moyen par tâche (number) -->
       @if (project().tasks.length > 0 && averageCostPerTask() !== null) {
-        <div class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
-          <span>Coût moyen/tâche : {{ averageCostPerTask() | number:'1.0-0' }}</span>
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[10px] uppercase font-bold text-slate-400 leading-tight">Coût / tâche</p>
+            <p class="font-semibold text-slate-800 truncate text-[11px] leading-tight mt-0.5">
+              {{ averageCostPerTask() | number:'1.0-0' }} TND
+            </p>
+          </div>
         </div>
       }
     </div>
 
-    <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
-    <div class="pt-4 border-t border-slate-100">
-      <div class="flex items-center justify-between mb-2">
-        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Tâches ({{ (project().tasks | slice:0:3).length }} sur {{ project().tasks.length }})
-        </h4>
-        @if (project().tasks.length > 0 && completionRate() !== null) {
-          <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 shadow-2xs">
-            {{ completionRate() | percent:'1.0-0' }}
-          </span>
-        }
-      </div>
-
-      <!-- Message d'avancement avec @if / @else if / @else -->
+    <!-- Section Avancement & Barre de progression -->
+    <div class="mb-4">
       <div class="flex items-center justify-between text-xs mb-1.5 font-medium">
-        <span class="text-slate-500">Avancement :</span>
+        <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400">Avancement</span>
         <span
-          class="font-semibold"
+          class="font-bold text-xs"
           [class.text-slate-400]="project().tasks.length === 0"
           [class.text-emerald-600]="project().tasks.length > 0 && completionRate() === 1"
           [class.text-amber-600]="project().tasks.length > 0 && (completionRate() ?? 0) > 0 && completionRate() !== 1"
@@ -104,7 +122,7 @@
       </div>
 
       <!-- Barre de progression (w-full bg-gray-200 rounded-full h-2) avec ngStyle et accesseur barColor -->
-      <div class="w-full bg-gray-200 rounded-full h-2 mb-3 overflow-hidden">
+      <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
         <div
           class="h-2 rounded-full transition-all duration-300"
           [ngStyle]="{
@@ -113,11 +131,25 @@
           }"
         ></div>
       </div>
+    </div>
+
+    <!-- Partie 6.3 : Input entre composants - transmission des tâches à TaskList -->
+    <div class="pt-4 border-t border-slate-100">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          Tâches ({{ (project().tasks | slice:0:3).length }} sur {{ project().tasks.length }})
+        </h4>
+        @if (project().tasks.length > 0 && completionRate() !== null) {
+          <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60 shadow-2xs">
+            {{ completionRate() | percent:'1.0-0' }}
+          </span>
+        }
+      </div>
 
       <!-- Étape 7 : Afficher le nombre de tâches par priorité avec keyvalue -->
       @if (project().tasks.length > 0) {
         <div class="mb-3 flex flex-wrap items-center gap-1.5">
-          <span class="text-[11px] font-semibold text-slate-400 mr-1">Priorités :</span>
+          <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mr-1">Priorités :</span>
           @for (item of tasksByPriority() | keyvalue; track item.key) {
             <span
               class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border shadow-2xs"
