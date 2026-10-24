@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
 import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
 import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
 import { OverdueDirective } from '../../../../shared/directives/overdue.directive';
+import { UserService } from '../../../../core/services/user.service';
+import { User } from '../../../users/models/user.model';
 
 @Component({
   selector: 'app-task-item',
@@ -19,9 +21,38 @@ import { OverdueDirective } from '../../../../shared/directives/overdue.directiv
   templateUrl: './task-item.html',
   styleUrl: './task-item.css',
 })
-export class TaskItem {
+export class TaskItem implements OnInit {
+  private readonly userService = inject(UserService, { optional: true });
+
   // Entrée obligatoire task avec l'API moderne input()
   readonly task = input.required<Task>();
+
+  // Entrée optionnelle pour afficher ou masquer l'assigné (Partie 2.4 & 2.5)
+  readonly showAssignee = input<boolean>(true);
+
+  // Nom de l'assigné passé depuis le parent
+  readonly assigneeName = input<string>();
+
+  // Liste des utilisateurs pour résolution si non transmis
+  readonly users = signal<User[]>([]);
+
+  ngOnInit(): void {
+    if (this.userService) {
+      this.userService.getUsers().subscribe((users) => {
+        this.users.set(users);
+      });
+    }
+  }
+
+  readonly resolvedAssigneeName = computed<string>(() => {
+    if (this.assigneeName()) {
+      return this.assigneeName()!;
+    }
+    const assigneeId = this.task().assigneeId;
+    if (!assigneeId) return 'Non assigné';
+    const found = this.users().find((u) => u.id === assigneeId);
+    return found ? found.name : 'Non assigné';
+  });
 
   /**
    * Classes Tailwind pour la bordure latérale et le fond selon le statut
