@@ -55,6 +55,23 @@ export class ProjectCard {
     return counts;
   });
 
+  /**
+   * Accesseur barColor pour la barre de progression :
+   * - rouge (#ef4444) sous 34 %
+   * - orange (#f59e0b) jusqu’à 66 %
+   * - vert (#22c55e) au-delà
+   */
+  get barColor(): string {
+    const rate = (this.completionRate() ?? 0) * 100;
+    if (rate < 34) {
+      return '#ef4444';
+    }
+    if (rate <= 66) {
+      return '#f59e0b';
+    }
+    return '#22c55e';
+  }
+
   getPriorityBadgeClass(priority: string): string {
     switch (priority) {
       case 'Haute':

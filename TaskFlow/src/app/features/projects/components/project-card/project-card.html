@@ -81,6 +81,39 @@
         }
       </div>
 
+      <!-- Message d'avancement avec @if / @else if / @else -->
+      <div class="flex items-center justify-between text-xs mb-1.5 font-medium">
+        <span class="text-slate-500">Avancement :</span>
+        <span
+          class="font-semibold"
+          [class.text-slate-400]="project().tasks.length === 0"
+          [class.text-emerald-600]="project().tasks.length > 0 && completionRate() === 1"
+          [class.text-amber-600]="project().tasks.length > 0 && (completionRate() ?? 0) > 0 && completionRate() !== 1"
+          [class.text-rose-600]="project().tasks.length > 0 && (completionRate() ?? 0) === 0"
+        >
+          @if (project().tasks.length === 0) {
+            Aucune tâche pour le moment
+          } @else if (completionRate() === 1) {
+            Projet terminé
+          } @else if ((completionRate() ?? 0) > 0) {
+            En progression
+          } @else {
+            Pas encore démarré
+          }
+        </span>
+      </div>
+
+      <!-- Barre de progression (w-full bg-gray-200 rounded-full h-2) avec ngStyle et accesseur barColor -->
+      <div class="w-full bg-gray-200 rounded-full h-2 mb-3 overflow-hidden">
+        <div
+          class="h-2 rounded-full transition-all duration-300"
+          [ngStyle]="{
+            width: ((completionRate() ?? 0) * 100) + '%',
+            backgroundColor: barColor
+          }"
+        ></div>
+      </div>
+
       <!-- Étape 7 : Afficher le nombre de tâches par priorité avec keyvalue -->
       @if (project().tasks.length > 0) {
         <div class="mb-3 flex flex-wrap items-center gap-1.5">
