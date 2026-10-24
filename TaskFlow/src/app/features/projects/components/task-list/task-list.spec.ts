@@ -89,4 +89,10 @@ describe('TaskList', () => {
       newStatus: 'En attente',
     });
   });
+
+  it('should return assignee name for assigned tasks and "Non assigné" for unassigned tasks', () => {
+    expect(component.getAssigneeName(1)).toBe('Amira Ben Salah');
+    expect(component.getAssigneeName(undefined)).toBe('Non assigné');
+    expect(component.getAssigneeName(9999)).toBe('Non assigné');
+  });
 });

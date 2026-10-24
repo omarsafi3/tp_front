@@ -166,4 +166,20 @@ describe('TaskItem', () => {
     fixture.detectChanges();
     expect((descEl.nativeElement as HTMLElement).querySelector('.app-tooltip-bubble')).toBeNull();
   });
+
+  it('should display assigneeName when showAssignee is true and handle unassigned case', async () => {
+    fixture.componentRef.setInput('assigneeName', 'Alice Dupont');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    let compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Alice Dupont');
+
+    fixture.componentRef.setInput('assigneeName', 'Non assigné');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Non assigné');
+  });
 });
