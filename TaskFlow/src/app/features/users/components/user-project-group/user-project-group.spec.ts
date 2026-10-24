@@ -11,6 +11,8 @@ describe('UserProjectGroup', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserProjectGroup);
+    fixture.componentRef.setInput('projectName', 'Projet Test');
+    fixture.componentRef.setInput('tasks', []);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
