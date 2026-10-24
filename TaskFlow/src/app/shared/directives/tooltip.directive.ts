@@ -42,41 +42,41 @@ export class TooltipDirective implements OnDestroy {
   }
 
   private createTooltip(): void {
-    // Création de l'élément bulle <span> avec Renderer2
+    // S'assurer que l'élément hôte est en position relative et élevé au-dessus des frères
+    this.renderer.setStyle(this.el.nativeElement, 'position', 'relative');
+    this.renderer.setStyle(this.el.nativeElement, 'z-index', '100');
+
+    // 1. Création de l'élément bulle <span> avec Renderer2
     this.tooltipElement = this.renderer.createElement('span');
 
-    // Création du nœud texte avec Renderer2 (sans innerHTML)
+    // 2. Création du nœud texte avec Renderer2 (sans innerHTML)
     const textNode = this.renderer.createText(this.tooltipText);
     this.renderer.appendChild(this.tooltipElement, textNode);
 
-    // Classes Tailwind et accessibilité
+    // 3. Classes Tailwind pour une infobulle élégante, lisible et jamais rognée
     this.renderer.addClass(this.tooltipElement, 'app-tooltip-bubble');
     this.renderer.addClass(this.tooltipElement, 'absolute');
     this.renderer.addClass(this.tooltipElement, 'z-50');
     this.renderer.addClass(this.tooltipElement, 'left-0');
     this.renderer.addClass(this.tooltipElement, 'top-full');
     this.renderer.addClass(this.tooltipElement, 'mt-1.5');
-    this.renderer.addClass(this.tooltipElement, 'px-2.5');
-    this.renderer.addClass(this.tooltipElement, 'py-1.5');
+    this.renderer.addClass(this.tooltipElement, 'p-2.5');
     this.renderer.addClass(this.tooltipElement, 'text-[11px]');
     this.renderer.addClass(this.tooltipElement, 'font-medium');
-    this.renderer.addClass(this.tooltipElement, 'text-white');
-    this.renderer.addClass(this.tooltipElement, 'bg-slate-900/95');
+    this.renderer.addClass(this.tooltipElement, 'leading-relaxed');
+    this.renderer.addClass(this.tooltipElement, 'text-slate-100');
+    this.renderer.addClass(this.tooltipElement, 'bg-slate-900');
     this.renderer.addClass(this.tooltipElement, 'rounded-lg');
-    this.renderer.addClass(this.tooltipElement, 'shadow-lg');
+    this.renderer.addClass(this.tooltipElement, 'shadow-2xl');
     this.renderer.addClass(this.tooltipElement, 'pointer-events-none');
     this.renderer.addClass(this.tooltipElement, 'whitespace-normal');
     this.renderer.addClass(this.tooltipElement, 'break-words');
-    this.renderer.addClass(this.tooltipElement, 'max-w-[240px]');
-    this.renderer.addClass(this.tooltipElement, 'sm:max-w-xs');
-    this.renderer.addClass(this.tooltipElement, 'w-max');
+    this.renderer.addClass(this.tooltipElement, 'w-64');
+    this.renderer.addClass(this.tooltipElement, 'max-w-[280px]');
     this.renderer.addClass(this.tooltipElement, 'border');
-    this.renderer.addClass(this.tooltipElement, 'border-slate-700');
+    this.renderer.addClass(this.tooltipElement, 'border-slate-700/80');
 
-    // S'assurer que l'élément hôte est positionné en relative
-    this.renderer.setStyle(this.el.nativeElement, 'position', 'relative');
-
-    // Ajout de la bulle à l'élément hôte avec Renderer2
+    // 4. Ajout de la bulle à l'élément hôte avec Renderer2
     this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);
   }
 
@@ -85,5 +85,6 @@ export class TooltipDirective implements OnDestroy {
       this.renderer.removeChild(this.el.nativeElement, this.tooltipElement);
       this.tooltipElement = null;
     }
+    this.renderer.removeStyle(this.el.nativeElement, 'z-index');
   }
 }

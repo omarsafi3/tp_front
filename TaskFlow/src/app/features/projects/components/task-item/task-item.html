@@ -1,5 +1,5 @@
 <div
-  class="task-item flex flex-col gap-2 p-3 rounded-xl border border-slate-200/90 bg-white shadow-2xs hover:shadow-xs transition-all duration-150 relative overflow-visible"
+  class="task-item flex flex-col gap-2 p-3 rounded-xl border border-slate-200/90 bg-white shadow-2xs hover:shadow-xs transition-all duration-150 relative overflow-visible hover:z-20"
   appHighlight
   [appOverdue]="task()"
   [dueDate]="task().dueDate"
@@ -28,7 +28,7 @@
         <!-- Description affichée uniquement si elle existe avec infobulle complète via TooltipDirective -->
         @if (task().description; as desc) {
           <p
-            class="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words cursor-help line-clamp-2"
+            class="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words cursor-help inline-block"
             [appTooltip]="desc"
           >
             {{ desc | truncate:40 }}
