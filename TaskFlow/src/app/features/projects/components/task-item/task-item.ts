@@ -11,6 +11,7 @@ import {
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
 import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
+import { InitialsPipe } from '../../../../shared/pipes/initials-pipe';
 import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
 import { OverdueDirective } from '../../../../shared/directives/overdue.directive';
 import { TooltipDirective } from '../../../../shared/directives/tooltip.directive';
@@ -24,6 +25,7 @@ import { User } from '../../../users/models/user.model';
     CommonModule,
     TruncatePipe,
     DeadlinePipe,
+    InitialsPipe,
     HighlightDirective,
     OverdueDirective,
     TooltipDirective,
@@ -133,6 +135,21 @@ export class TaskItem implements OnInit {
       case 'Basse':
       default:
         return 'bg-slate-100 text-slate-600 border-slate-200';
+    }
+  }
+
+  /**
+   * Partie 6.3 : Utilisation de ngStyle pour afficher une indication visuelle de l'avancement
+   */
+  getStatusProgressStyle(): { width: string; backgroundColor: string } {
+    switch (this.task().status) {
+      case 'Terminé':
+        return { width: '100%', backgroundColor: '#10b981' };
+      case 'En cours':
+        return { width: '55%', backgroundColor: '#3b82f6' };
+      case 'En attente':
+      default:
+        return { width: '15%', backgroundColor: '#f59e0b' };
     }
   }
 }

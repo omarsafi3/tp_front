@@ -73,14 +73,22 @@
     </div>
   </div>
 
+  <!-- Partie 6.3 : Indication visuelle de l'avancement avec ngStyle -->
+  <div class="w-full bg-slate-100 rounded-full h-1 overflow-hidden" title="Avancement de la tâche">
+    <div
+      class="h-1 rounded-full transition-all duration-300"
+      [ngStyle]="getStatusProgressStyle()"
+    ></div>
+  </div>
+
   <!-- Section 2 : Métadonnées du bas (Assigné et Date d'échéance) -->
   <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 pt-1.5 border-t border-slate-100 text-xs">
-    <!-- Nom de l'assigné : affiché uniquement lorsque showAssignee vaut true -->
+    <!-- Nom de l'assigné avec InitialsPipe : affiché uniquement lorsque showAssignee vaut true -->
     @if (showAssignee()) {
-      <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 truncate max-w-[150px]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-        </svg>
+      <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 truncate max-w-[160px]">
+        <span class="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[8px] flex items-center justify-center shrink-0 border border-indigo-200">
+          {{ resolvedAssigneeName() | initials }}
+        </span>
         <span class="truncate">{{ resolvedAssigneeName() }}</span>
       </span>
     }

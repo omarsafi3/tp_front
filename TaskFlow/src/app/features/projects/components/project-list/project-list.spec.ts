@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { ProjectList } from './project-list';
 import { ProjectService } from '../../../../core/services/project.service';
 import { Project } from '../../models/project.model';
+import { ProjectCard } from '../project-card/project-card';
 
 describe('ProjectList', () => {
   let component: ProjectList;
@@ -100,5 +102,18 @@ describe('ProjectList', () => {
     });
 
     expect(component.selectedProject()?.tasks.find((t) => t.id === 10)?.status).toBe('Terminé');
+  });
+
+  it('should filter projects based on searchTerm and display only matching project cards', async () => {
+    component.searchTerm.set('Beta');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.filteredProjects().length).toBe(1);
+    expect(component.filteredProjects()[0].name).toBe('Projet Beta');
+
+    const projectCards = fixture.debugElement.queryAll(By.directive(ProjectCard));
+    expect(projectCards.length).toBe(1);
+    expect(projectCards[0].componentInstance.project().name).toBe('Projet Beta');
   });
 });

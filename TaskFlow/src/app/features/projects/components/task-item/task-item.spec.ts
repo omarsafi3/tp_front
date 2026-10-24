@@ -182,4 +182,38 @@ describe('TaskItem', () => {
     compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Non assigné');
   });
+
+  it('should return appropriate ngStyle progress styles based on status', () => {
+    expect(component.getStatusProgressStyle()).toEqual({
+      width: '55%',
+      backgroundColor: '#3b82f6',
+    });
+
+    fixture.componentRef.setInput('task', {
+      ...mockTask,
+      status: 'Terminé',
+    });
+    expect(component.getStatusProgressStyle()).toEqual({
+      width: '100%',
+      backgroundColor: '#10b981',
+    });
+
+    fixture.componentRef.setInput('task', {
+      ...mockTask,
+      status: 'En attente',
+    });
+    expect(component.getStatusProgressStyle()).toEqual({
+      width: '15%',
+      backgroundColor: '#f59e0b',
+    });
+  });
+
+  it('should format assignee initials using initials pipe', async () => {
+    fixture.componentRef.setInput('assigneeName', 'Amira Ben Salah');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('AB');
+  });
 });
