@@ -31,6 +31,37 @@ describe('TaskItem', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should display "▲" for priority Haute', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('▲');
+    expect(compiled.textContent).toContain('Haute');
+  });
+
+  it('should display "●" for priority Moyenne', async () => {
+    fixture.componentRef.setInput('task', {
+      ...mockTask,
+      priority: 'Moyenne',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('●');
+    expect(compiled.textContent).toContain('Moyenne');
+  });
+
+  it('should display "▼" for priority Basse', async () => {
+    fixture.componentRef.setInput('task', {
+      ...mockTask,
+      priority: 'Basse',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('▼');
+    expect(compiled.textContent).toContain('Basse');
+  });
+
   it('should format due date with date pipe and deadline pipe', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
