@@ -13,7 +13,7 @@ describe('TaskItem', () => {
     status: 'En cours',
     assigneeId: 1,
     dueDate: '2026-10-30',
-    description: 'Description de test',
+    description: 'Une description très longue qui va dépasser la limite de quarante caractères pour le test de troncature.',
   };
 
   beforeEach(async () => {
@@ -29,5 +29,30 @@ describe('TaskItem', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should format due date with date pipe and deadline pipe', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('30/10/2026');
+  });
+
+  it('should truncate long description using truncate pipe', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('…');
+  });
+
+  it('should handle task without dueDate and description safely', async () => {
+    fixture.componentRef.setInput('task', {
+      id: 2,
+      title: 'Tâche simple',
+      priority: 'Basse',
+      status: 'En attente',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Aucune échéance');
   });
 });
