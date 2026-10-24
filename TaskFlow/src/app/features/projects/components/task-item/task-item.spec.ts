@@ -127,4 +127,25 @@ describe('TaskItem', () => {
     fixture.detectChanges();
     expect((mainEl.nativeElement as HTMLElement).style.backgroundColor).toBe(initialBg);
   });
+
+  it('should correctly cycle task status: En attente -> En cours -> Terminé -> En attente', () => {
+    expect(component.getNextStatus('En attente')).toBe('En cours');
+    expect(component.getNextStatus('En cours')).toBe('Terminé');
+    expect(component.getNextStatus('Terminé')).toBe('En attente');
+  });
+
+  it('should emit taskStatusChange event when clicking on status button', () => {
+    let emittedStatus: string | null = null;
+    component.taskStatusChange.subscribe((status) => {
+      emittedStatus = status;
+    });
+
+    // mockTask status is 'En cours', next should be 'Terminé'
+    fixture.detectChanges();
+    const statusBtn = fixture.debugElement.query(By.css('.task-status-btn'));
+    expect(statusBtn).toBeTruthy();
+
+    statusBtn.nativeElement.click();
+    expect(emittedStatus).toBe('Terminé');
+  });
 });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TaskList } from './task-list';
+import { TaskList, TaskStatusChangeEvent } from './task-list';
 import { TaskItem } from '../task-item/task-item';
 import { Task } from '../../models/task.model';
 
@@ -66,5 +66,27 @@ describe('TaskList', () => {
 
     const taskItems = fixture.debugElement.queryAll(By.directive(TaskItem));
     expect(taskItems[0].componentInstance.showAssignee()).toBe(false);
+  });
+
+  it('should emit taskStatusChange when child TaskItem triggers status change', async () => {
+    fixture.componentRef.setInput('tasks', mockTasks);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    let emittedEvent: TaskStatusChangeEvent | null = null;
+    component.taskStatusChange.subscribe((event) => {
+      emittedEvent = event;
+    });
+
+    const taskItems = fixture.debugElement.queryAll(By.directive(TaskItem));
+    const firstTaskItem: TaskItem = taskItems[0].componentInstance;
+
+    // Simulate taskStatusChange output from first TaskItem
+    firstTaskItem.taskStatusChange.emit('En attente');
+
+    expect(emittedEvent).toEqual({
+      taskId: 1,
+      newStatus: 'En attente',
+    });
   });
 });

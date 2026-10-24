@@ -6,6 +6,7 @@
       [task]="task"
       [showAssignee]="showAssignee()"
       [assigneeName]="getAssigneeName(task.assigneeId)"
+      (taskStatusChange)="onTaskStatusChange(task.id, $event)"
     />
   } @empty {
     <div class="text-xs text-slate-400 font-medium py-5 text-center bg-slate-50/70 rounded-xl border border-dashed border-slate-200">

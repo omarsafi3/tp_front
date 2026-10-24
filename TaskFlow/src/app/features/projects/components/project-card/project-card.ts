@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { Project, ProjectStatus } from '../../models/project.model';
-import { TaskList } from '../task-list/task-list';
+import { TaskStatus } from '../../models/task.model';
+import { TaskList, TaskStatusChangeEvent } from '../task-list/task-list';
+
+export interface ProjectTaskStatusChangeEvent {
+  projectId: number;
+  taskId: number;
+  newStatus: TaskStatus;
+}
 
 @Component({
   selector: 'app-project-card',
@@ -19,6 +26,9 @@ export class ProjectCard {
 
   // Partie 6.5 : Output pour informer le parent lors de la sélection
   readonly projectSelected = output<Project>();
+
+  // Événement taskStatusChange enrichi avec projectId et transmis au parent
+  readonly taskStatusChange = output<ProjectTaskStatusChangeEvent>();
 
   // Taux de réalisation calculé dans la classe uniquement si des tâches existent (> 0)
   readonly completionRate = computed<number | null>(() => {
@@ -87,6 +97,18 @@ export class ProjectCard {
   // Partie 6.4 & 6.5 : Méthode appelée au clic sur le bouton Sélectionner
   selectProject(): void {
     this.projectSelected.emit(this.project());
+  }
+
+  /**
+   * Partie 3.5 & 3.7 : Remontée de l'événement TaskList vers le parent (ProjectList)
+   * sans muter directement les données en entrée
+   */
+  onTaskStatusChange(event: TaskStatusChangeEvent): void {
+    this.taskStatusChange.emit({
+      projectId: this.project().id,
+      taskId: event.taskId,
+      newStatus: event.newStatus,
+    });
   }
 
   /**

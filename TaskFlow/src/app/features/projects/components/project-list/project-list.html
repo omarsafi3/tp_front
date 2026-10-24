@@ -72,10 +72,12 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (project of filteredProjects(); track project.id) {
         <!-- Partie 6.2 & 6.5 : Property Binding [project] et Output (projectSelected) -->
+        <!-- Partie 3 : Event binding (taskStatusChange) pour propager la mise à jour -->
         <app-project-card
           [project]="project"
           [isSelected]="selectedProject()?.id === project.id"
           (projectSelected)="onProjectSelected($event)"
+          (taskStatusChange)="onTaskStatusChange($event)"
         />
       }
     </div>

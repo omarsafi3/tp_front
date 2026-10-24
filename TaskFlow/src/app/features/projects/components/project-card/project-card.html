@@ -162,7 +162,10 @@
       }
 
       <!-- Étape 6 : N’afficher que les 3 premières tâches du projet (slice) -->
-      <app-task-list [tasks]="project().tasks | slice:0:3" />
+      <app-task-list
+        [tasks]="project().tasks | slice:0:3"
+        (taskStatusChange)="onTaskStatusChange($event)"
+      />
     </div>
   </div>
 

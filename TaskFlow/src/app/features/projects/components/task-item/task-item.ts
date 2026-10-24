@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
 import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
@@ -33,6 +41,9 @@ export class TaskItem implements OnInit {
   // Nom de l'assigné passé depuis le parent
   readonly assigneeName = input<string>();
 
+  // Événement taskStatusChange déclaré avec l'API moderne output()
+  readonly taskStatusChange = output<TaskStatus>();
+
   // Liste des utilisateurs pour résolution si non transmis
   readonly users = signal<User[]>([]);
 
@@ -55,6 +66,30 @@ export class TaskItem implements OnInit {
   });
 
   /**
+   * Fait évoluer le statut selon le cycle :
+   * En attente -> En cours -> Terminé -> En attente
+   */
+  getNextStatus(current: TaskStatus): TaskStatus {
+    switch (current) {
+      case 'En attente':
+        return 'En cours';
+      case 'En cours':
+        return 'Terminé';
+      case 'Terminé':
+      default:
+        return 'En attente';
+    }
+  }
+
+  /**
+   * Méthode appelée au clic sur le bouton de statut
+   */
+  changeStatus(): void {
+    const nextStatus = this.getNextStatus(this.task().status);
+    this.taskStatusChange.emit(nextStatus);
+  }
+
+  /**
    * Classes Tailwind pour la bordure latérale et le fond selon le statut
    */
   getTaskStatusBorderClass(status: TaskStatus): string {
@@ -75,12 +110,12 @@ export class TaskItem implements OnInit {
   getStatusBadgeClass(status: TaskStatus): string {
     switch (status) {
       case 'Terminé':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+        return 'bg-emerald-100 text-emerald-800 border-emerald-200 hover:bg-emerald-200';
       case 'En cours':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200';
       case 'En attente':
       default:
-        return 'bg-amber-100 text-amber-800 border-amber-200';
+        return 'bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200';
     }
   }
 

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../../core/services/project.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 import { Project } from '../../models/project.model';
-import { ProjectCard } from '../project-card/project-card';
+import { ProjectCard, ProjectTaskStatusChangeEvent } from '../project-card/project-card';
 
 @Component({
   selector: 'app-project-list',
@@ -45,5 +45,31 @@ export class ProjectList implements OnInit {
   onProjectSelected(project: Project): void {
     console.log(project);
     this.selectedProject.set(project);
+  }
+
+  // Partie 3.6 : Mise à jour immutable du projet et de la tâche correspondante
+  onTaskStatusChange(event: ProjectTaskStatusChangeEvent): void {
+    this.projects.update((currentProjects) =>
+      currentProjects.map((project) => {
+        if (project.id !== event.projectId) {
+          return project;
+        }
+        return {
+          ...project,
+          tasks: project.tasks.map((task) =>
+            task.id === event.taskId ? { ...task, status: event.newStatus } : task
+          ),
+        };
+      })
+    );
+
+    // Mettre à jour selectedProject si c'est le projet dont la tâche a changé
+    const sel = this.selectedProject();
+    if (sel && sel.id === event.projectId) {
+      const updated = this.projects().find((p) => p.id === event.projectId);
+      if (updated) {
+        this.selectedProject.set(updated);
+      }
+    }
   }
 }
