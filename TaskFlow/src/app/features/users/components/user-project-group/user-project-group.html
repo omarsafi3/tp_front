@@ -1,20 +1,22 @@
-<div class="rounded-2xl bg-slate-50/70 border border-slate-200/60 p-4 space-y-3">
+<div class="rounded-2xl bg-slate-50/85 border border-slate-200/75 p-4 space-y-3 overflow-visible">
   <!-- En-tête : Nom du projet et nombre de tâches -->
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between gap-2">
     <div class="flex items-center gap-2 min-w-0">
-      <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shrink-0"></span>
-      <h5 class="text-sm font-bold text-slate-800 truncate">
+      <span class="w-2 h-2 rounded-full bg-indigo-500 ring-3 ring-indigo-500/15 shrink-0"></span>
+      <h5 class="text-xs sm:text-sm font-bold text-slate-800 truncate">
         {{ projectName() }}
       </h5>
     </div>
-    <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-white text-indigo-600 border border-slate-200/60 shadow-xs shrink-0">
+    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-lg bg-white text-indigo-700 border border-slate-200/80 shadow-2xs tabular-nums shrink-0">
       {{ tasks().length }} {{ tasks().length > 1 ? 'tâches' : 'tâche' }}
     </span>
   </div>
 
-  <!-- Réutilisation du composant task-list avec assigné masqué -->
+  <!-- Réutilisation du composant task-list avec assigné masqué et remontée d'événements -->
   <app-task-list
     [tasks]="tasks()"
     [showAssignee]="false"
+    (taskStatusChange)="onTaskStatusChange($event)"
+    (taskDelete)="onTaskDelete($event)"
   />
 </div>

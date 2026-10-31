@@ -4,6 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../../core/services/project.service';
 import { UserService } from '../../../../core/services/user.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
+import { InitialsPipe } from '../../../../shared/pipes/initials-pipe';
+import {
+  ProjectTaskDeleteEvent,
+  ProjectTaskStatusChangeEvent,
+} from '../../../projects/components/project-card/project-card';
 import { Project } from '../../../projects/models/project.model';
 import { User } from '../../models/user.model';
 import { UserCard } from '../user-card/user-card';
@@ -11,7 +16,7 @@ import { UserCard } from '../user-card/user-card';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, UserCard, EmptyState],
+  imports: [CommonModule, FormsModule, UserCard, EmptyState, InitialsPipe],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css',
 })
@@ -74,5 +79,39 @@ export class UserList implements OnInit {
 
   setActiveFilter(filter: 'Tous' | 'Actifs' | 'Inactifs'): void {
     this.activeFilter.set(filter);
+  }
+
+  // Mise à jour immuable du statut d'une tâche depuis la vue "Par user"
+  onTaskStatusChange(event: ProjectTaskStatusChangeEvent): void {
+    this.projects.update((currentProjects) =>
+      currentProjects.map((project) => {
+        if (project.id !== event.projectId) {
+          return project;
+        }
+        return {
+          ...project,
+          tasks: project.tasks.map((task) =>
+            task.id === event.taskId ? { ...task, status: event.newStatus } : task
+          ),
+        };
+      })
+    );
+    this.projectService.syncProjects?.(this.projects());
+  }
+
+  // Suppression immuable d'une tâche depuis la vue "Par user"
+  onTaskDelete(event: ProjectTaskDeleteEvent): void {
+    this.projects.update((currentProjects) =>
+      currentProjects.map((project) => {
+        if (project.id !== event.projectId) {
+          return project;
+        }
+        return {
+          ...project,
+          tasks: project.tasks.filter((t) => t.id !== event.taskId),
+        };
+      })
+    );
+    this.projectService.syncProjects?.(this.projects());
   }
 }

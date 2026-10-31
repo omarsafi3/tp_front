@@ -53,28 +53,37 @@ export class TooltipDirective implements OnDestroy {
     const textNode = this.renderer.createText(this.tooltipText);
     this.renderer.appendChild(this.tooltipElement, textNode);
 
-    // 3. Classes Tailwind pour une infobulle élégante, lisible et jamais rognée
-    this.renderer.addClass(this.tooltipElement, 'app-tooltip-bubble');
-    this.renderer.addClass(this.tooltipElement, 'absolute');
-    this.renderer.addClass(this.tooltipElement, 'z-50');
-    this.renderer.addClass(this.tooltipElement, 'left-0');
-    this.renderer.addClass(this.tooltipElement, 'top-full');
-    this.renderer.addClass(this.tooltipElement, 'mt-1.5');
-    this.renderer.addClass(this.tooltipElement, 'p-2.5');
-    this.renderer.addClass(this.tooltipElement, 'text-[11px]');
-    this.renderer.addClass(this.tooltipElement, 'font-medium');
-    this.renderer.addClass(this.tooltipElement, 'leading-relaxed');
-    this.renderer.addClass(this.tooltipElement, 'text-slate-100');
-    this.renderer.addClass(this.tooltipElement, 'bg-slate-900');
-    this.renderer.addClass(this.tooltipElement, 'rounded-lg');
-    this.renderer.addClass(this.tooltipElement, 'shadow-2xl');
-    this.renderer.addClass(this.tooltipElement, 'pointer-events-none');
-    this.renderer.addClass(this.tooltipElement, 'whitespace-normal');
-    this.renderer.addClass(this.tooltipElement, 'break-words');
-    this.renderer.addClass(this.tooltipElement, 'w-64');
-    this.renderer.addClass(this.tooltipElement, 'max-w-[280px]');
-    this.renderer.addClass(this.tooltipElement, 'border');
-    this.renderer.addClass(this.tooltipElement, 'border-slate-700/80');
+    // 3. Classes Tailwind pour une infobulle moderne, contrastée et jamais rognée
+    const classes = [
+      'app-tooltip-bubble',
+      'absolute',
+      'z-50',
+      'left-0',
+      'top-full',
+      'mt-2',
+      'px-3',
+      'py-2',
+      'text-[11px]',
+      'font-normal',
+      'normal-case',
+      'tracking-normal',
+      'leading-relaxed',
+      'text-slate-100',
+      'bg-slate-900/95',
+      'backdrop-blur-md',
+      'rounded-xl',
+      'shadow-xl',
+      'pointer-events-none',
+      'whitespace-normal',
+      'break-words',
+      'w-64',
+      'max-w-[270px]',
+      'border',
+      'border-slate-700/80',
+    ];
+    for (const cls of classes) {
+      this.renderer.addClass(this.tooltipElement, cls);
+    }
 
     // 4. Ajout de la bulle à l'élément hôte avec Renderer2
     this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);

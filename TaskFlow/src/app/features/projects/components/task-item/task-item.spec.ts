@@ -230,4 +230,40 @@ describe('TaskItem', () => {
     deleteBtn.nativeElement.click();
     expect(deletedId).toBe(1);
   });
+
+  it('should apply overdue classes on unfinished past task and clear them when completed', async () => {
+    fixture.componentRef.setInput('task', {
+      id: 99,
+      title: 'Tâche urgente en retard',
+      priority: 'Haute',
+      status: 'En cours',
+      dueDate: '2020-01-01',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const mainEl = fixture.debugElement.query(By.css('.task-item')).nativeElement as HTMLElement;
+    expect(mainEl.classList.contains('is-overdue')).toBe(true);
+    expect(mainEl.classList.contains('bg-red-50')).toBe(true);
+    expect(mainEl.classList.contains('border-red-500')).toBe(true);
+    expect(mainEl.classList.contains('border-l-blue-500')).toBe(true);
+
+    // Complete the task -> overdue classes must disappear and deadline shows "Terminée"
+    fixture.componentRef.setInput('task', {
+      id: 99,
+      title: 'Tâche urgente en retard',
+      priority: 'Haute',
+      status: 'Terminé',
+      dueDate: '2020-01-01',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(mainEl.classList.contains('is-overdue')).toBe(false);
+    expect(mainEl.classList.contains('bg-red-50')).toBe(false);
+    expect(mainEl.classList.contains('border-red-500')).toBe(false);
+    expect(mainEl.classList.contains('border-l-emerald-500')).toBe(true);
+    expect(mainEl.textContent).toContain('Terminée');
+    expect(mainEl.textContent).not.toContain('En retard');
+  });
 });

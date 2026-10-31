@@ -38,6 +38,18 @@ export class ProjectList implements OnInit {
     );
   });
 
+  // Indicateurs globaux calculés en temps réel depuis le Signal projects
+  readonly totalTasksCount = computed(() =>
+    this.projects().reduce((sum, p) => sum + (p.tasks?.length ?? 0), 0)
+  );
+
+  readonly completedTasksTotal = computed(() =>
+    this.projects().reduce(
+      (sum, p) => sum + (p.tasks?.filter((t) => t.status === 'Terminé').length ?? 0),
+      0
+    )
+  );
+
   // Partie 12.4 : Subscription explicite à l'Observable du service
   ngOnInit(): void {
     this.projectService.getProjects().subscribe((projects) => {
@@ -67,6 +79,8 @@ export class ProjectList implements OnInit {
       })
     );
 
+    this.projectService.syncProjects?.(this.projects());
+
     // Mettre à jour selectedProject si c'est le projet dont la tâche a changé
     const sel = this.selectedProject();
     if (sel && sel.id === event.projectId) {
@@ -90,6 +104,8 @@ export class ProjectList implements OnInit {
         };
       })
     );
+
+    this.projectService.syncProjects?.(this.projects());
 
     // Mettre à jour selectedProject si nécessaire
     const sel = this.selectedProject();

@@ -118,4 +118,17 @@ describe('ProjectCard', () => {
       taskId: 101,
     });
   });
+
+  it('should truncate long uppercase project names with "..." using TruncatePipe', async () => {
+    fixture.componentRef.setInput('project', {
+      ...mockProject,
+      name: 'Migration base de données',
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const heading = compiled.querySelector('h3');
+    expect(heading?.textContent?.trim()).toBe('MIGRATION BASE DE DO...');
+  });
 });

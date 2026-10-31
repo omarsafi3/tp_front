@@ -1,39 +1,42 @@
 <div class="task-list space-y-2.5">
-  <!-- Bonus 7.2 : Filtre de statut des tâches (Toutes, En cours, Terminé) affiché quand des tâches existent -->
+  <!-- Bonus 7.2 : Filtre de statut des tâches (Toutes, En cours, Terminé) -->
   @if (tasks().length > 0) {
-    <div class="flex flex-wrap items-center justify-between gap-1.5 pb-1">
-      <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Filtrer :</span>
-      <div class="inline-flex p-0.5 rounded-lg bg-slate-100 border border-slate-200/60 text-[10px] font-semibold">
+    <div class="flex items-center justify-between gap-2 pb-1">
+      <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 shrink-0">Vue</span>
+      <div class="inline-flex p-0.5 rounded-xl bg-slate-100/95 border border-slate-200/75 text-[10px] font-bold">
         <button
           type="button"
           (click)="setTaskFilter('Toutes')"
-          class="filter-btn-all px-2 py-0.5 rounded-md transition-all cursor-pointer"
+          class="filter-btn-all px-2.5 py-1 rounded-lg transition-all cursor-pointer"
           [class.bg-white]="taskFilter() === 'Toutes'"
           [class.text-slate-900]="taskFilter() === 'Toutes'"
           [class.shadow-2xs]="taskFilter() === 'Toutes'"
           [class.text-slate-500]="taskFilter() !== 'Toutes'"
+          [class.hover:text-slate-700]="taskFilter() !== 'Toutes'"
         >
           Toutes
         </button>
         <button
           type="button"
           (click)="setTaskFilter('En cours')"
-          class="filter-btn-in-progress px-2 py-0.5 rounded-md transition-all cursor-pointer"
+          class="filter-btn-in-progress px-2.5 py-1 rounded-lg transition-all cursor-pointer"
           [class.bg-white]="taskFilter() === 'En cours'"
           [class.text-blue-700]="taskFilter() === 'En cours'"
           [class.shadow-2xs]="taskFilter() === 'En cours'"
           [class.text-slate-500]="taskFilter() !== 'En cours'"
+          [class.hover:text-slate-700]="taskFilter() !== 'En cours'"
         >
           En cours
         </button>
         <button
           type="button"
           (click)="setTaskFilter('Terminé')"
-          class="filter-btn-done px-2 py-0.5 rounded-md transition-all cursor-pointer"
+          class="filter-btn-done px-2.5 py-1 rounded-lg transition-all cursor-pointer"
           [class.bg-white]="taskFilter() === 'Terminé'"
           [class.text-emerald-700]="taskFilter() === 'Terminé'"
           [class.shadow-2xs]="taskFilter() === 'Terminé'"
           [class.text-slate-500]="taskFilter() !== 'Terminé'"
+          [class.hover:text-slate-700]="taskFilter() !== 'Terminé'"
         >
           Terminées
         </button>
@@ -53,11 +56,22 @@
       (taskDelete)="onTaskDelete(task.id)"
     />
   } @empty {
-    <div class="text-xs text-slate-400 font-medium py-4 text-center bg-slate-50/70 rounded-xl border border-dashed border-slate-200">
-      @if (taskFilter() === 'Toutes') {
-        Aucune tâche
-      } @else {
-        Aucune tâche {{ taskFilter() === 'En cours' ? 'en cours' : 'terminée' }}
+    <div class="text-xs text-slate-400 font-medium py-5 px-3 text-center bg-slate-50/75 rounded-2xl border border-dashed border-slate-200/90 space-y-1.5">
+      <p>
+        @if (taskFilter() === 'Toutes') {
+          Aucune tâche
+        } @else {
+          Aucune tâche {{ taskFilter() === 'En cours' ? 'en cours' : 'terminée' }}
+        }
+      </p>
+      @if (taskFilter() !== 'Toutes' && tasks().length > 0) {
+        <button
+          type="button"
+          (click)="setTaskFilter('Toutes')"
+          class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 underline underline-offset-2 cursor-pointer"
+        >
+          Afficher toutes les tâches
+        </button>
       }
     </div>
   }

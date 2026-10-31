@@ -1,5 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
+import {
+  ProjectTaskDeleteEvent,
+  ProjectTaskStatusChangeEvent,
+} from '../../../projects/components/project-card/project-card';
 import { Project } from '../../../projects/models/project.model';
 import { Task } from '../../../projects/models/task.model';
 import { User } from '../../models/user.model';
@@ -26,6 +30,8 @@ export class UserCard {
   readonly isSelected = input<boolean>(false);
 
   readonly userSelected = output<User>();
+  readonly taskStatusChange = output<ProjectTaskStatusChangeEvent>();
+  readonly taskDelete = output<ProjectTaskDeleteEvent>();
 
   // Objet de correspondance rôle -> couleur pour la pastille d'initiales
   readonly roleColors: Record<string, string> = {
@@ -82,5 +88,13 @@ export class UserCard {
 
   selectUser(): void {
     this.userSelected.emit(this.user());
+  }
+
+  onTaskStatusChange(event: ProjectTaskStatusChangeEvent): void {
+    this.taskStatusChange.emit(event);
+  }
+
+  onTaskDelete(event: ProjectTaskDeleteEvent): void {
+    this.taskDelete.emit(event);
   }
 }

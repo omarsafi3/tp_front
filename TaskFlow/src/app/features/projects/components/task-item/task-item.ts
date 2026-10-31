@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  computed,
-  inject,
-  input,
-  OnInit,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Task, TaskPriority, TaskStatus } from '../../models/task.model';
 import { TruncatePipe } from '../../../../shared/pipes/truncate-pipe';
 import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
@@ -16,8 +8,6 @@ import { HighlightDirective } from '../../../../shared/directives/highlight.dire
 import { OverdueDirective } from '../../../../shared/directives/overdue.directive';
 import { TooltipDirective } from '../../../../shared/directives/tooltip.directive';
 import { TaskStatusBadge } from '../../../../shared/components/task-status-badge/task-status-badge';
-import { UserService } from '../../../../core/services/user.service';
-import { User } from '../../../users/models/user.model';
 
 @Component({
   selector: 'app-task-item',
@@ -35,16 +25,14 @@ import { User } from '../../../users/models/user.model';
   templateUrl: './task-item.html',
   styleUrl: './task-item.css',
 })
-export class TaskItem implements OnInit {
-  private readonly userService = inject(UserService, { optional: true });
-
+export class TaskItem {
   // Entrée obligatoire task avec l'API moderne input()
   readonly task = input.required<Task>();
 
   // Entrée optionnelle pour afficher ou masquer l'assigné (Partie 2.4 & 2.5)
   readonly showAssignee = input<boolean>(true);
 
-  // Nom de l'assigné passé depuis le parent
+  // Nom de l'assigné passé depuis le parent (Partie 5.2 : pas d'appel de service dans TaskItem)
   readonly assigneeName = input<string>();
 
   // Événement taskStatusChange déclaré avec l'API moderne output()
@@ -53,25 +41,9 @@ export class TaskItem implements OnInit {
   // Bonus 7.1 : Événement taskDelete émis lors du clic sur le bouton Supprimer
   readonly taskDelete = output<number>();
 
-  // Liste des utilisateurs pour résolution si non transmis
-  readonly users = signal<User[]>([]);
-
-  ngOnInit(): void {
-    if (this.userService) {
-      this.userService.getUsers().subscribe((users) => {
-        this.users.set(users);
-      });
-    }
-  }
-
   readonly resolvedAssigneeName = computed<string>(() => {
-    if (this.assigneeName()) {
-      return this.assigneeName()!;
-    }
-    const assigneeId = this.task().assigneeId;
-    if (!assigneeId) return 'Non assigné';
-    const found = this.users().find((u) => u.id === assigneeId);
-    return found ? found.name : 'Non assigné';
+    const provided = this.assigneeName()?.trim();
+    return provided ? provided : 'Non assigné';
   });
 
   /**
@@ -106,17 +78,17 @@ export class TaskItem implements OnInit {
   }
 
   /**
-   * Classes Tailwind pour la bordure latérale et le fond selon le statut
+   * Classes Tailwind pour la bordure latérale selon le statut
    */
   getTaskStatusBorderClass(status: TaskStatus): string {
     switch (status) {
       case 'Terminé':
-        return 'border-l-4 border-l-emerald-500 bg-emerald-50/25';
+        return 'border-l-4 border-l-emerald-500';
       case 'En cours':
-        return 'border-l-4 border-l-blue-500 bg-blue-50/25';
+        return 'border-l-4 border-l-blue-500';
       case 'En attente':
       default:
-        return 'border-l-4 border-l-amber-500 bg-amber-50/25';
+        return 'border-l-4 border-l-amber-500';
     }
   }
 

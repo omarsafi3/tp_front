@@ -1,125 +1,148 @@
 <div
-  class="bg-white shadow-md rounded-2xl p-6 border border-slate-200 flex flex-col justify-between h-full transition-all duration-200 hover:shadow-lg"
+  class="group/user relative bg-white rounded-3xl border border-slate-200/85 shadow-[0_2px_12px_-3px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.04)] hover:shadow-[0_20px_40px_-12px_rgba(15,23,42,0.11),0_4px_14px_-2px_rgba(79,70,229,0.06)] hover:border-slate-300/90 flex flex-col justify-between h-full transition-all duration-300 overflow-visible hover:z-10"
   [class.ring-2]="isSelected()"
   [class.ring-indigo-500]="isSelected()"
-  [class.border-indigo-300]="isSelected()"
+  [class.border-indigo-400]="isSelected()"
 >
-  <div>
-    <!-- En-tête : Avatar + Informations utilisateur + Badge Actif/Inactif -->
-    <div class="flex items-start justify-between gap-3 mb-4">
-      <div class="flex items-center gap-3 min-w-0">
-        <!-- Avatar Initiales : pastille ronde avec ngStyle selon le rôle -->
-        <div
-          class="w-11 h-11 rounded-full text-white flex items-center justify-center text-sm font-black shadow-sm shrink-0 ring-2 ring-slate-100"
-          [ngStyle]="{ backgroundColor: avatarBgColor }"
-        >
-          {{ user().name | initials }}
-        </div>
-
-        <div class="min-w-0">
-          <!-- Étape 8 : Nom avec la première lettre de chaque mot en majuscule (titlecase) -->
-          <h3 class="text-base font-bold text-slate-900 truncate">
-            {{ user().name | titlecase }}
-          </h3>
-          <!-- Étape 9 : Adresse email en minuscules (lowercase) -->
-          <p class="text-xs text-slate-500 truncate">
-            {{ user().email | lowercase }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Badge Actif / Inactif : géré avec ngClass (vert si actif, gris sinon) -->
-      <span
-        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0"
-        [ngClass]="user().active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
-      >
-        <span
-          class="w-1.5 h-1.5 rounded-full"
-          [ngClass]="user().active ? 'bg-emerald-500' : 'bg-slate-400'"
-        ></span>
-        {{ user().active ? 'Actif' : 'Inactif' }}
-      </span>
-    </div>
-
-    <!-- Badge Rôle -->
-    <div class="mb-4">
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-        {{ user().role }}
-      </span>
-    </div>
-
-    <!-- Section Trois Compteurs -->
-    <div class="mb-5 pt-3 border-t border-slate-100">
-      <div class="flex items-center justify-between mb-2">
-        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Tâches assignées ({{ allUserTasks().length }})
-        </h4>
-      </div>
-
-      <div class="grid grid-cols-3 gap-2">
-        <!-- À faire (En attente) -->
-        <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/70 text-center">
-          <p class="text-[10px] uppercase font-bold text-amber-700">À faire</p>
-          <p class="text-base font-black text-amber-700 mt-0.5">{{ pendingCount() }}</p>
-        </div>
-
-        <!-- En cours -->
-        <div class="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/70 text-center">
-          <p class="text-[10px] uppercase font-bold text-blue-700">En cours</p>
-          <p class="text-base font-black text-blue-700 mt-0.5">{{ inProgressCount() }}</p>
-        </div>
-
-        <!-- Terminées -->
-        <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/70 text-center">
-          <p class="text-[10px] uppercase font-bold text-emerald-700">Terminées</p>
-          <p class="text-base font-black text-emerald-700 mt-0.5">{{ completedCount() }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section Tâches par projet via UserProjectGroup / @empty -->
-    <div class="pt-3 border-t border-slate-100 space-y-3">
-      @for (group of projectGroups(); track group.projectId) {
-        <app-user-project-group
-          [projectName]="group.projectName"
-          [tasks]="group.tasks"
-        />
-      } @empty {
-        <div class="py-2">
-          <app-empty-state
-            title="Aucune tâche assignée"
-            message="Cet utilisateur n'a aucune tâche en cours sur les projets."
-          />
-        </div>
-      }
-    </div>
+  <!-- Liseré supérieur -->
+  <div class="overflow-hidden rounded-t-3xl">
+    <div
+      class="h-1.5 w-full"
+      [class.bg-gradient-to-r]="true"
+      [class.from-indigo-500]="user().active"
+      [class.to-violet-500]="user().active"
+      [class.from-slate-300]="!user().active"
+      [class.to-slate-400]="!user().active"
+    ></div>
   </div>
 
-  <!-- Bouton de sélection -->
-  <div class="mt-6 pt-4 border-t border-slate-100">
-    <button
-      type="button"
-      (click)="selectUser()"
-      class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
-      [class.bg-indigo-600]="!isSelected()"
-      [class.text-white]="!isSelected()"
-      [class.hover:bg-indigo-700]="!isSelected()"
-      [class.bg-indigo-50]="isSelected()"
-      [class.text-indigo-700]="isSelected()"
-      [class.border]="isSelected()"
-      [class.border-indigo-200]="isSelected()"
-    >
-      @if (isSelected()) {
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-        Membre sélectionné
-      } @else {
-        <span>Sélectionner</span>
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      }
-    </button>
+  <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+    <div>
+      <!-- En-tête : Avatar + Informations utilisateur + Badge Actif/Inactif -->
+      <div class="flex items-start justify-between gap-3 mb-4">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <!-- Avatar Initiales : pastille ronde avec ngStyle selon le rôle -->
+          <div
+            class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-sm font-extrabold shadow-md shrink-0 ring-4 ring-slate-100"
+            [ngStyle]="{ backgroundColor: avatarBgColor }"
+          >
+            {{ user().name | initials }}
+          </div>
+
+          <div class="min-w-0">
+            <!-- Étape 8 : Nom avec la première lettre de chaque mot en majuscule (titlecase) -->
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 truncate tracking-tight">
+              {{ user().name | titlecase }}
+            </h3>
+            <!-- Étape 9 : Adresse email en minuscules (lowercase) -->
+            <p class="text-xs text-slate-500 truncate mt-0.5">
+              {{ user().email | lowercase }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Badge Actif / Inactif : géré avec ngClass (vert si actif, gris sinon) -->
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border shrink-0"
+          [ngClass]="user().active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
+        >
+          <span
+            class="w-1.5 h-1.5 rounded-full"
+            [ngClass]="user().active ? 'bg-emerald-500' : 'bg-slate-400'"
+          ></span>
+          {{ user().active ? 'Actif' : 'Inactif' }}
+        </span>
+      </div>
+
+      <!-- Badge Rôle -->
+      <div class="mb-5 flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50/90 text-indigo-700 border border-indigo-200/70">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span>{{ user().role }}</span>
+        </span>
+      </div>
+
+      <!-- Section Trois Compteurs -->
+      <div class="mb-5 pt-4 border-t border-slate-100">
+        <div class="flex items-center justify-between mb-2.5">
+          <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            Charge de travail ({{ allUserTasks().length }} {{ allUserTasks().length > 1 ? 'tâches' : 'tâche' }})
+          </h4>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5">
+          <!-- À faire (En attente) -->
+          <div class="p-3 rounded-2xl bg-amber-50/75 border border-amber-200/70 text-center">
+            <p class="text-[10px] uppercase font-bold tracking-wider text-amber-700">À faire</p>
+            <p class="text-lg font-extrabold text-amber-800 tabular-nums mt-0.5">{{ pendingCount() }}</p>
+          </div>
+
+          <!-- En cours -->
+          <div class="p-3 rounded-2xl bg-blue-50/75 border border-blue-200/70 text-center">
+            <p class="text-[10px] uppercase font-bold tracking-wider text-blue-700">En cours</p>
+            <p class="text-lg font-extrabold text-blue-800 tabular-nums mt-0.5">{{ inProgressCount() }}</p>
+          </div>
+
+          <!-- Terminées -->
+          <div class="p-3 rounded-2xl bg-emerald-50/75 border border-emerald-200/70 text-center">
+            <p class="text-[10px] uppercase font-bold tracking-wider text-emerald-700">Terminées</p>
+            <p class="text-lg font-extrabold text-emerald-800 tabular-nums mt-0.5">{{ completedCount() }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Tâches par projet via UserProjectGroup / @empty -->
+      <div class="pt-4 border-t border-slate-100 space-y-3.5">
+        @for (group of projectGroups(); track group.projectId) {
+          <app-user-project-group
+            [projectId]="group.projectId"
+            [projectName]="group.projectName"
+            [tasks]="group.tasks"
+            (taskStatusChange)="onTaskStatusChange($event)"
+            (taskDelete)="onTaskDelete($event)"
+          />
+        } @empty {
+          <div class="py-1">
+            <app-empty-state
+              title="Aucune tâche assignée"
+              message="Cet utilisateur n'a aucune tâche en cours sur les projets."
+            />
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Bouton de sélection -->
+    <div class="mt-6 pt-4 border-t border-slate-100">
+      <button
+        type="button"
+        (click)="selectUser()"
+        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer"
+        [class.bg-slate-900]="!isSelected()"
+        [class.text-white]="!isSelected()"
+        [class.shadow-xs]="!isSelected()"
+        [class.hover:bg-indigo-600]="!isSelected()"
+        [class.hover:shadow-md]="!isSelected()"
+        [class.hover:shadow-indigo-600/20]="!isSelected()"
+        [class.bg-indigo-50]="isSelected()"
+        [class.text-indigo-700]="isSelected()"
+        [class.border]="isSelected()"
+        [class.border-indigo-200]="isSelected()"
+      >
+        @if (isSelected()) {
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          <span>Membre sélectionné</span>
+        } @else {
+          <span>Sélectionner le membre</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform duration-200 group-hover/user:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        }
+      </button>
+    </div>
   </div>
 </div>

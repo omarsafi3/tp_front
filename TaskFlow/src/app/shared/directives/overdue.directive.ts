@@ -3,6 +3,7 @@ import {
   HostBinding,
   Input,
   OnChanges,
+  OnInit,
   SimpleChanges,
 } from '@angular/core';
 import { Task } from '../../features/projects/models/task.model';
@@ -11,7 +12,7 @@ import { Task } from '../../features/projects/models/task.model';
   selector: '[appOverdue]',
   standalone: true,
 })
-export class OverdueDirective implements OnChanges {
+export class OverdueDirective implements OnInit, OnChanges {
   /**
    * Date d'échéance (optionnelle)
    */
@@ -48,6 +49,10 @@ export class OverdueDirective implements OnChanges {
   @HostBinding('class')
   get overdueClasses(): string {
     return this.isOverdue ? 'border-red-500 bg-red-50 is-overdue' : '';
+  }
+
+  ngOnInit(): void {
+    this.updateOverdueStatus();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
